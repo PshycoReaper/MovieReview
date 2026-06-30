@@ -27,7 +27,7 @@ app.listen(puerto, () => {
 //============
 
 /*
-names of de collections
+names of the collections
 admin
 reviews
 users
@@ -37,6 +37,18 @@ const admin = mongoose.model('admin', new mongoose.Schema({
     userName: string,
     email: string,
     password: string
+}))
+
+/*const user =  mongoose.model('users',new mongoose.Schema({
+    id:Number,
+    userName:string,
+}))*/
+
+const review = mongoose.model('reviews', new mongoose.Schema({
+    id: Number,
+    idMovie: Number,
+    userName: string,
+    review: string
 }))
 
 
