@@ -1,65 +1,291 @@
-<div class="dashboard-container">
+<div class="flex min-h-screen bg-slate-100">
 
-  <!-- Barra lateral -->
-  <aside id="LateralNav">
+  <!-- ================= Sidebar ================= -->
+  <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl">
 
     <!-- Logo -->
-    <div class="logo">
-      <img src="assets/logo.png" alt="Logo">
+    <div class="h-20 flex items-center justify-center border-b border-slate-700">
+
+      <h1 class="text-3xl font-bold">
+        <span class="text-cyan-400">Movie</span>Review
+      </h1>
+
     </div>
 
     <!-- Menú -->
-    <nav class="menu">
+    <nav class="flex-1 px-4 py-6">
 
-      <a href="#" class="menu-item active">
-        <i class="fa-solid fa-star"></i>
-        <span>Usuarios</span>
+      <p class="text-slate-400 text-xs uppercase mb-3 px-3">
+        Administración
+      </p>
+
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-cyan-500 font-medium mb-2">
+
+        <i class="fa-solid fa-users"></i>
+
+        Usuarios
+
       </a>
 
-      <a href="#" class="menu-item ">
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition mb-2">
+
         <i class="fa-solid fa-film"></i>
-        <span>Películas</span>
+
+        Películas
+
       </a>
 
-      <a href="#" class="menu-item">
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition">
+
         <i class="fa-solid fa-star"></i>
-        <span>Reseñas</span>
+
+        Reseñas
+
       </a>
 
     </nav>
 
   </aside>
 
-  <!-- Contenido principal -->
-  <main id="MainTables">
+  <!-- ================= Contenido ================= -->
 
-    <!-- Aquí irá el contenido de cada sección -->
-    <section id="MoviesSection">
+  <main class="flex-1 p-8 overflow-auto">
 
-      <!-- Título -->
-      <div class="section-header">
-        <h2>Administrar películas</h2>
+    <!-- Título -->
 
-        <button class="btn-add">
-          Añadir película
+    <div class="mb-8">
+
+      <h1 class="text-4xl font-bold text-slate-800">
+
+        Dashboard
+
+      </h1>
+
+      <p class="text-slate-500 mt-2">
+
+        Bienvenido nuevamente, administrador 👋
+
+      </p>
+
+    </div>
+
+    <!-- ================= Cards ================= -->
+
+    <div class="grid lg:grid-cols-3 gap-6">
+
+      <div class="bg-white rounded-2xl shadow-md p-6">
+
+        <div class="flex justify-between">
+
+          <div>
+
+            <p class="text-slate-500">
+
+              Usuarios
+
+            </p>
+
+            <h2 class="text-4xl font-bold mt-2">
+
+              42
+
+            </h2>
+
+          </div>
+
+          <i class="fa-solid fa-users text-3xl text-cyan-500"></i>
+
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md p-6">
+
+        <div class="flex justify-between">
+
+          <div>
+
+            <p class="text-slate-500">
+
+              Películas
+
+            </p>
+
+            <h2 class="text-4xl font-bold mt-2">
+
+              356
+
+            </h2>
+
+          </div>
+
+          <i class="fa-solid fa-film text-3xl text-red-500"></i>
+
+        </div>
+
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md p-6">
+
+        <div class="flex justify-between">
+
+          <div>
+
+            <p class="text-slate-500">
+
+              Reseñas
+
+            </p>
+
+            <h2 class="text-4xl font-bold mt-2">
+
+              1,293
+
+            </h2>
+
+          </div>
+
+          <i class="fa-solid fa-star text-3xl text-yellow-500"></i>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= Swiper ================= -->
+
+     <div class="bg-white rounded-2xl shadow-md mt-8 p-6">
+
+      <div class="flex justify-between items-center mb-5">
+
+        <h2 class="text-2xl font-semibold">
+
+          Películas Populares
+
+        </h2>
+
+      </div>
+
+      <!-- <swiper-container slides-per-view="5" space-between="20" navigation="true">
+
+        <swiper-slide *ngFor="let movie of movies">
+
+          <img [src]="imageUrl + movie.poster_path" class="rounded-xl w-full">
+
+          <h3 class="font-semibold mt-3">
+
+            {{movie.title}}
+
+          </h3>
+
+        </swiper-slide>
+
+      </swiper-container> -->
+
+    </div>
+
+    <!-- ================= Tabla ================= -->
+
+    <div class="bg-white rounded-2xl shadow-md mt-8">
+
+      <div class="flex justify-between items-center px-8 py-6 border-b">
+
+        <h2 class="text-xl font-semibold">
+
+          Administrar películas
+
+        </h2>
+
+        <button class="bg-cyan-500 hover:bg-cyan-600 transition px-5 py-3 rounded-xl text-white">
+
+          <i class="fa-solid fa-plus mr-2"></i>
+
+          Añadir Película
+
         </button>
-      </div>
-
-      <!-- Aquí irá la tabla -->
-      <div class="table-container">
-
-        <!-- table -->
 
       </div>
 
-    </section>
+      <div class="overflow-x-auto">
 
-    <!-- Otra sección futura -->
-    <!--
-        <section id="ReviewsSection">
-            ...
-        </section>
-        -->
+        <table class="w-full">
+
+          <thead class="bg-slate-50">
+
+            <tr>
+
+              <th class="text-left px-6 py-4">Título</th>
+
+              <th class="text-left">Director</th>
+
+              <th class="text-left">Año</th>
+
+              <th class="text-left">Calificación</th>
+
+              <th class="text-center">Acciones</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr class="border-b hover:bg-slate-50 transition" *ngFor="let movie of movies">
+
+              <td class="px-6 py-5">
+
+                {{movie.title}}
+
+              </td>
+
+              <td>
+
+                Director
+
+              </td>
+
+              <td>
+
+                {{movie.release_date | date:'yyyy'}}
+
+              </td>
+
+              <td>
+
+                ⭐ {{movie.vote_average}}
+
+              </td>
+
+              <td>
+
+                <div class="flex justify-center gap-4">
+
+                  <button class="text-cyan-500">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                  </button>
+
+                  <button class="text-red-500">
+
+                    <i class="fa-solid fa-trash"></i>
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
 
   </main>
 
