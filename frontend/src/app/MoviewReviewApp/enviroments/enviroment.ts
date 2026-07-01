@@ -6,4 +6,5 @@ export const environment = {
     token:
       'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkODE1NTNiZGEwMzc0NzBkNDY0YTEzMTdhMzNhNWYxYiIsIm5iZiI6MTcxMDE3MDc5NS4wMzAwMDAyLCJzdWIiOiI2NWVmMjJhYTJiMTEzZDAxN2RmOWFkODciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.X2AthVzqQNYrejDv7xQiNjxCkrQxGyDZ9YHs2MGemaY',
   },
+  apiUrl: 'http://localhost:3000/api',
 };
