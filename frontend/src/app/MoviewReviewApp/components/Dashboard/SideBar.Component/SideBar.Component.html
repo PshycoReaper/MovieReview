@@ -27,8 +27,8 @@
 
     @for(item of adminMenu(); track item.route){
 
-    <a href="{{ item.route }}" class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition" [class.bg-cyan-500]="item.active"
-      [class.font-medium]="item.active" [class.hover:bg-slate-800]="!item.active">
+    <a href="{{ item.route }}" class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition"
+      [class.bg-cyan-500]="item.active" [class.font-medium]="item.active" [class.hover:bg-slate-800]="!item.active">
 
       <i></i>
 
@@ -76,7 +76,9 @@
 
     @for(item of accountMenu(); track item.route){
 
-    <a href="#" class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800">
+    <a href="{{ item.route }}"
+      class="{{ item.class || 'mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800' }}"
+      (click)="item.function && item.function()">
 
       <i></i>
 

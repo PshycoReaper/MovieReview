@@ -1,9 +1,12 @@
 import { Component, signal } from '@angular/core';
 
+
 interface MenuItem {
   title: string;
   route: string;
   active?: boolean;
+  function?: () => void;
+  class?: string;
 }
 
 @Component({
@@ -15,12 +18,11 @@ export class SideBarComponent {
   adminMenu = signal<MenuItem[]>([
     {
       title: 'Panel de Control',
-      route: '/dashboard/main',
-      active: true,
+      route: '/admin/main',
     },
     {
       title: 'Películas',
-      route: '/dashboard/movies',
+      route: '/admin/movies',
     },
     {
       title: 'Reseñas',
@@ -54,7 +56,12 @@ export class SideBarComponent {
     },
     {
       title: 'Cerrar sesión',
-      route: '/logout',
+      route: '',
+      function: () => this.logout(),
+      class: "w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 transition"
     },
   ]);
+  logout() {
+    localStorage.removeItem('token');
+  }
 }

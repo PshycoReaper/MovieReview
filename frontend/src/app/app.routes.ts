@@ -1,14 +1,42 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './MoviewReviewApp/guards/auth-guard';
 
 export const routes: Routes = [
+
+  // ==========================
+  // Página pública (próximamente)
+  // ==========================
+  /*{
+    path: '',
+    loadComponent: () =>
+      import('./MoviewReviewApp/pages/home/home.component')
+        .then(m => m.HomeComponent),
+  },*/
+
+  // ==========================
+  // Login
+  // ==========================
   {
-    path: 'dashboard',
+    path: 'login',
+    loadComponent: () =>
+      import('./MoviewReviewApp/pages/adminAuth/login/login.component')
+        .then(m => m.LoginComponent),
+  },
+
+  // ==========================
+  // Panel de Administración
+  // ==========================
+  {
+    path: 'admin',
+
+    canActivate: [authGuard],
+
     loadComponent: () =>
       import('./MoviewReviewApp/pages/adminDashboard/adminDashboard')
-        .then((m) => m.AdminDashboard),
+        .then(m => m.AdminDashboard),
 
     children: [
-      // Redirección por defecto
+
       {
         path: '',
         redirectTo: 'main',
@@ -19,41 +47,30 @@ export const routes: Routes = [
         path: 'main',
         loadComponent: () =>
           import('./MoviewReviewApp/pages/adminDashboard/principalDashboard/principalDashboard')
-            .then((m) => m.PrincipalDashboard),
+            .then(m => m.PrincipalDashboard),
       },
 
       {
         path: 'movies',
         loadComponent: () =>
           import('./MoviewReviewApp/pages/adminDashboard/MovieDashboardPage/MovieDashboardPage')
-            .then((m) => m.MovieDashboardPage),
+            .then(m => m.MovieDashboardPage),
       },
 
-      // Más adelante...
-      // {
-      //   path: 'reviews',
-      //   loadComponent: () =>
-      //     import('./MoviewReviewApp/pages/adminDashboard/ReviewDashboardPage/ReviewDashboardPage')
-      //       .then((m) => m.ReviewDashboardPage),
-      // },
-      //
-      // {
-      //   path: 'users',
-      //   loadComponent: () =>
-      //     import('./MoviewReviewApp/pages/adminDashboard/UserDashboardPage/UserDashboardPage')
-      //       .then((m) => m.UserDashboardPage),
-      // },
+      // Futuro
+      // reviews
+      // users
+      // settings
+
     ],
   },
 
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
-  },
-
+  // ==========================
+  // Ruta no encontrada
+  // ==========================
   {
     path: '**',
-    redirectTo: 'dashboard',
-  },
+    redirectTo: 'login',
+  }
+
 ];
