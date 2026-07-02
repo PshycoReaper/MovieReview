@@ -13,21 +13,18 @@ export class PrincipalDashboard {
 
   imageUrl = 'https://image.tmdb.org/t/p/w500';
 
-  moviesArray = signal<Movie[]>([]);
+  moviesApiArray = signal<Movie[]>([]);
+  moviesDBArray = signal<Movie[]>([]);
   usersArray = signal<number[]>([]);
   reviewsArray = signal<number[]>([]);
 
   constructor() {
-
     this.tmdbService.getMovies().subscribe((movies: Movie[]) => {
+      this.moviesApiArray.set(movies);
 
-      this.moviesArray.set(movies);
+      console.log(this.moviesApiArray());
 
-      console.log(this.moviesArray());
-
-      console.log('Length:', this.moviesArray().length);
-
+      console.log('Length:', this.moviesApiArray().length);
     });
-
   }
 }

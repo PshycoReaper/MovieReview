@@ -8,7 +8,6 @@ interface MenuItem {
 
 @Component({
   selector: 'side-bar',
-  standalone: true,
   imports: [],
   templateUrl: './SideBar.Component.html',
 })
@@ -16,12 +15,12 @@ export class SideBarComponent {
   adminMenu = signal<MenuItem[]>([
     {
       title: 'Panel de Control',
-      route: '/admin',
+      route: '/dashboard/main',
       active: true,
     },
     {
       title: 'Películas',
-      route: '/admin/movies',
+      route: '/dashboard/movies',
     },
     {
       title: 'Reseñas',

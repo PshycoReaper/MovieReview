@@ -62,7 +62,7 @@
 
           <h2 class="text-4xl font-bold mt-2">
 
-            {{ moviesArray().length }}
+            {{ moviesDBArray().length }}
 
 
           </h2>
@@ -118,7 +118,7 @@
     </div>
     <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-10">
 
-      @for (movie of moviesArray(); track movie.id) {
+      @for (movie of moviesApiArray(); track movie.id) {
 
       <div class="rounded-xl bg-slate-50 p-3 shadow hover:shadow-lg transition">
 
@@ -140,5 +140,5 @@
 
   <!-- ================= Tabla ================= -->
 
- 
+
 </div>
