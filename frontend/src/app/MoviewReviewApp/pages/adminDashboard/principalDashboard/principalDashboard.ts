@@ -1,11 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { TmdbService } from '../../../services/movieApi/tmdbService';
 import { Movie } from '../../../Interfaces/movie.interface';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'principal-dashboard',
-  imports: [DatePipe],
+  imports: [],
   templateUrl: './principalDashboard.html',
 })
 export class PrincipalDashboard {
