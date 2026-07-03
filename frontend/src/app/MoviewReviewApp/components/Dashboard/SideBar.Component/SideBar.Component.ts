@@ -30,10 +30,6 @@ export class SideBarComponent {
       title: 'Reseñas',
       route: '/admin/reviews',
     },
-    {
-      title: 'Usuarios (opcional)',
-      route: '/admin/users',
-    },
   ]);
 
   navigationMenu = signal<MenuItem[]>([

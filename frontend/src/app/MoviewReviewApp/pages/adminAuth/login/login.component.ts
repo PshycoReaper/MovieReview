@@ -6,13 +6,11 @@ import { AuthService } from '../../../services/auth/auth';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
-
   email = '';
   password = '';
 
@@ -20,27 +18,18 @@ export class LoginComponent {
   private router = inject(Router);
 
   iniciarSesion() {
-
     this.authService.login(this.email, this.password).subscribe({
-
       next: (respuesta: any) => {
-
         localStorage.setItem('token', respuesta.token);
 
         alert('Bienvenido ' + respuesta.admin.userName);
 
         this.router.navigate(['/admin/main']);
-
       },
 
       error: (error: any) => {
-
         alert(error.error.mensaje);
-
-      }
-
+      },
     });
-
   }
-
 }

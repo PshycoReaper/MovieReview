@@ -1,0 +1,153 @@
+<div class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+  <!-- ================= Header ================= -->
+
+  <div class="flex flex-col gap-4 border-b border-slate-200 px-6 py-5 md:flex-row md:items-center md:justify-between">
+
+    <div>
+
+      <h2 class="text-xl font-bold text-slate-800">
+
+        {{ title() }}
+
+      </h2>
+
+      <p class="mt-1 text-sm text-slate-500">
+
+        Total de registros: {{ data().length }}
+
+      </p>
+
+    </div>
+
+    <button (click)="create.emit()"
+      class="rounded-xl bg-cyan-500 px-5 py-3 font-medium text-white transition hover:bg-cyan-600">
+
+      <i class="fa-solid fa-plus mr-2"></i>
+
+      {{ buttonText() }}
+
+    </button>
+
+  </div>
+
+  <!-- ================= Tabla ================= -->
+
+  <div class="overflow-x-auto">
+
+    <table class="min-w-full">
+
+      <!-- Header -->
+
+      <thead class="bg-slate-50">
+
+        <tr>
+
+          @for(column of columns(); track column.key){
+
+          <th
+            class="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider text-slate-600">
+
+            {{ column.title }}
+
+          </th>
+
+          }
+
+          <th class="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider text-slate-600">
+
+            Acciones
+
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <!-- Body -->
+
+      <tbody class="divide-y divide-slate-200">
+
+        @for(row of data(); track row.id){
+
+        <tr class="transition hover:bg-slate-50">
+
+          @for(column of columns(); track column.key){
+
+          <td class="whitespace-nowrap px-6 py-5 text-sm text-slate-700">
+
+            @if(column.formatter){
+
+            {{ column.formatter!(row[column.key]) }}
+
+            } @else {
+
+            {{ row[column.key] }}
+
+            }
+
+          </td>
+
+          }
+
+          <td class="px-6 py-5">
+
+            <div class="flex justify-center gap-2">
+
+              <button (click)="edit.emit(row)"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-cyan-600 transition hover:bg-cyan-100">
+
+                <i class="fa-solid fa-pen"></i>
+
+              </button>
+
+              <button (click)="delete.emit(row)"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-red-500 transition hover:bg-red-100">
+
+                <i class="fa-solid fa-trash"></i>
+
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+        } @empty {
+
+        <tr>
+
+          <td [attr.colspan]="columns().length + 1" class="px-6 py-20 text-center">
+
+            <div class="flex flex-col items-center gap-3">
+
+              <i class="fa-solid fa-table-list text-5xl text-slate-300"></i>
+
+              <h3 class="text-lg font-semibold text-slate-600">
+
+                No hay registros
+
+              </h3>
+
+              <p class="text-sm text-slate-400">
+
+                Cuando existan registros aparecerán aquí.
+
+              </p>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
