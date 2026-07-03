@@ -1,0 +1,237 @@
+<!-- ================= MODAL ================= -->
+<div *ngIf="showModal"
+    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg p-6">
+
+        <!-- Título -->
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">
+                Escribir reseña
+            </h2>
+
+            <p class="text-gray-500 text-sm">
+                Comparte tu opinión sobre esta película.
+            </p>
+        </div>
+
+        <!-- Formulario -->
+        <form #reviewForm="ngForm"
+            (ngSubmit)="publishReview()"
+            class="space-y-5">
+
+            <!-- ================= Nombre ================= -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Nombre
+                </label>
+
+                <input
+                    type="text"
+                    name="userName"
+                    [(ngModel)]="userName"
+                    required
+                    minlength="3"
+                    #name="ngModel"
+                    placeholder="Tu nombre"
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-500 focus:outline-none">
+
+                <p
+                    *ngIf="name.invalid && name.touched"
+                    class="text-red-500 text-sm mt-1">
+
+                    El nombre debe contener al menos 3 caracteres.
+
+                </p>
+
+            </div>
+
+            <!-- ================= Calificación ================= -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Calificación
+                </label>
+
+                <select
+
+                    name="grade"
+
+                    [(ngModel)]="grade"
+
+                    required
+
+                    #gradeInput="ngModel"
+
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-red-500 focus:outline-none">
+
+                    <option [ngValue]="null">
+                        Selecciona una calificación
+                    </option>
+
+                    <option [ngValue]="1">⭐ 1</option>
+                    <option [ngValue]="2">⭐⭐ 2</option>
+                    <option [ngValue]="3">⭐⭐⭐ 3</option>
+                    <option [ngValue]="4">⭐⭐⭐⭐ 4</option>
+                    <option [ngValue]="5">⭐⭐⭐⭐⭐ 5</option>
+
+                </select>
+
+                <p
+                    *ngIf="gradeInput.invalid && gradeInput.touched"
+                    class="text-red-500 text-sm mt-1">
+
+                    Debes seleccionar una calificación.
+
+                </p>
+
+            </div>
+
+            <!-- ================= Reseña ================= -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Reseña
+                </label>
+
+                <textarea
+
+                    rows="5"
+
+                    name="review"
+
+                    [(ngModel)]="review"
+
+                    required
+
+                    minlength="15"
+
+                    #reviewInput="ngModel"
+
+                    placeholder="Escribe tu opinión..."
+
+                    class="w-full rounded-lg border border-gray-300 px-4 py-2 resize-none focus:ring-2 focus:ring-red-500 focus:outline-none">
+
+                </textarea>
+
+                <p
+
+                    *ngIf="reviewInput.invalid && reviewInput.touched"
+
+                    class="text-red-500 text-sm mt-1">
+
+                    La reseña debe tener al menos 15 caracteres.
+
+                </p>
+
+            </div>
+
+            <!-- ================= Botones ================= -->
+
+            <div class="flex justify-end gap-3">
+
+                <button
+
+                    type="button"
+
+                    (click)="closeModal()"
+
+                    class="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition">
+
+                    Cancelar
+
+                </button>
+
+                <button
+
+                    type="submit"
+
+                    [disabled]="reviewForm.invalid"
+
+                    class="bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-5 py-2 rounded-lg transition">
+
+                    Publicar reseña
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div class="max-w-4xl mx-auto mt-10">
+
+    <div class="flex justify-between items-center mb-8">
+
+        <h2 class="text-3xl font-bold text-gray-800">
+
+            Reseñas
+
+        </h2>
+
+        <button
+
+            (click)="openModal()"
+
+            class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg transition">
+
+            Escribir reseña
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ================= LISTA DE RESEÑAS ================= -->
+
+<div class="max-w-4xl mx-auto mt-10 space-y-6">
+
+    <div
+
+        *ngIf="reviews.length === 0"
+
+        class="text-gray-500 italic">
+
+        Aún no hay reseñas publicadas.
+
+    </div>
+
+    <div
+
+        *ngFor="let review of reviews"
+
+        class="bg-white rounded-xl shadow-md p-6 border">
+
+        <div class="flex justify-between items-center">
+
+            <h3 class="text-lg font-bold">
+
+                {{ review.userName }}
+
+            </h3>
+
+            <span class="font-semibold text-yellow-500">
+
+                ⭐ {{ review.grade }}/5
+
+            </span>
+
+        </div>
+
+        <p class="mt-4 text-gray-700">
+
+            {{ review.review }}
+
+        </p>
+
+    </div>
+
+</div>

@@ -47,8 +47,9 @@ const admin = mongoose.model('admin', new mongoose.Schema({
 const review = mongoose.model('reviews', new mongoose.Schema({
     id: Number,
     idMovie: Number,
-    userName: string,
-    review: string
+    userName: String,
+    review: String,
+    grade: Number 
 }))
 
 

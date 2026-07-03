@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './MoviewReviewApp/guards/auth-guard';
+import { ReviewComponent } from './MoviewReviewApp/components/MoviePage/Review.Component/Review.Component';
 
 export const routes: Routes = [
 
@@ -12,6 +13,14 @@ export const routes: Routes = [
       import('./MoviewReviewApp/pages/home/home.component')
         .then(m => m.HomeComponent),
   },*/
+
+  // ==========================
+  // Publicar reseña
+  // ==========================
+  {
+    path: 'review',
+    component: ReviewComponent
+  },
 
   // ==========================
   // Login
