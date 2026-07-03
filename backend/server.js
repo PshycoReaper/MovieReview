@@ -10,5 +10,5 @@ connectDB();
 
 // Iniciar servidor
 app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en http://localhost:${PORT} checate esa w`);
+    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
 });

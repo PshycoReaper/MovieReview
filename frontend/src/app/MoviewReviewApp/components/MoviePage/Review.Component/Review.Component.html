@@ -196,7 +196,7 @@
 
     <div
 
-        *ngIf="reviews.length === 0"
+        *ngIf="reviewsFromBackend().length === 0"
 
         class="text-gray-500 italic">
 
@@ -204,9 +204,38 @@
 
     </div>
 
-    <div
+    <!-- <div
 
-        *ngFor="let review of reviews"
+        *ngFor="let review of reviewsFromBackend"
+
+        class="bg-white rounded-xl shadow-md p-6 border">
+
+        <div class="flex justify-between items-center">
+
+            <h3 class="text-lg font-bold">
+
+                {{ review.userName }}
+
+            </h3>
+
+            <span class="font-semibold text-yellow-500">
+
+                ⭐ {{ review.grade }}/5
+
+            </span>
+
+        </div>
+
+        <p class="mt-4 text-gray-700">
+
+            {{ review.review }}
+
+        </p>
+
+    </div> -->
+     <div
+
+        *ngFor="let review of reviewsFromBackend()"
 
         class="bg-white rounded-xl shadow-md p-6 border">
 

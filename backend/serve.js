@@ -1,59 +1,61 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const path = require('path');
+//EXISTE PERO YA NO SE UTILIZA, SE DEJO POR SI SE NECESITA EN EL FUTURO
 
-const app = express();
-const puerto = 3500;
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const cors = require('cors');
+// const path = require('path');
 
-const MONGO_URL = 'mongodb://Guille:ulhL9b4Fa1ueEHl3@ac-jhsqbwj-shard-00-00.clrdywj.mongodb.net:27017,ac-jhsqbwj-shard-00-01.clrdywj.mongodb.net:27017,ac-jhsqbwj-shard-00-02.clrdywj.mongodb.net:27017/MovieReviewDB?ssl=true&replicaSet=atlas-zcac6m-shard-0&authSource=admin&appName=MovieReview'
+// const app = express();
+// const puerto = 3500;
 
-app.use(cors())
-app.use(express.json());
+// const MONGO_URL = 'mongodb://Guille:ulhL9b4Fa1ueEHl3@ac-jhsqbwj-shard-00-00.clrdywj.mongodb.net:27017,ac-jhsqbwj-shard-00-01.clrdywj.mongodb.net:27017,ac-jhsqbwj-shard-00-02.clrdywj.mongodb.net:27017/MovieReviewDB?ssl=true&replicaSet=atlas-zcac6m-shard-0&authSource=admin&appName=MovieReview'
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'))
+// app.use(cors())
+// app.use(express.json());
 
-})
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend/index.html'))
 
-mongoose.connect(MONGO_URL).then(() => console.log('Conexión realizada')).catch(err => console.error('Al menos lo intentaste', err))
+// })
 
-app.listen(puerto, () => {
-    console.log(`Servidor activo en http:localhost:${puerto}`)
-})
+// mongoose.connect(MONGO_URL).then(() => console.log('Conexión realizada')).catch(err => console.error('Al menos lo intentaste', err))
 
-//============
-// DATA MODELS
-//============
+// app.listen(puerto, () => {
+//     console.log(`Servidor activo en http:localhost:${puerto}`)
+// })
 
-/*
-names of the collections
-admin
-reviews
-users
-*/
-const admin = mongoose.model('admin', new mongoose.Schema({
-    id: Number,
-    userName: string,
-    email: string,
-    password: string
-}))
+// //============
+// // DATA MODELS
+// //============
 
-/*const user =  mongoose.model('users',new mongoose.Schema({
-    id:Number,
-    userName:string,
-}))*/
+// /*
+// names of the collections
+// admin
+// reviews
+// users
+// */
+// const admin = mongoose.model('admin', new mongoose.Schema({
+//     id: Number,
+//     userName: string,
+//     email: string,
+//     password: string
+// }))
 
-const review = mongoose.model('reviews', new mongoose.Schema({
-    id: Number,
-    idMovie: Number,
-    userName: String,
-    review: String,
-    grade: Number 
-}))
+// /*const user =  mongoose.model('users',new mongoose.Schema({
+//     id:Number,
+//     userName:string,
+// }))*/
+
+// const review = mongoose.model('reviews', new mongoose.Schema({
+//     id: Number,
+//     idMovie: Number,
+//     userName: String,
+//     review: String,
+//     grade: Number 
+// }))
 
 
-//==============
-//API ENDPOINTS
-//==============
+// //==============
+// //API ENDPOINTS
+// //==============
 
