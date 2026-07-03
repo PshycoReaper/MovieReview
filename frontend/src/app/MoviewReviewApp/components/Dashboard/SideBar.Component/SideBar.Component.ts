@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 
 interface MenuItem {
@@ -15,6 +16,7 @@ interface MenuItem {
   templateUrl: './SideBar.Component.html',
 })
 export class SideBarComponent {
+  private name = signal<string>('');
   adminMenu = signal<MenuItem[]>([
     {
       title: 'Panel de Control',

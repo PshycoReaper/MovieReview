@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class DBconexion {
   private http = inject(HttpClient);
 
-  private apiUrl = 'http://localhost:3500/';
+  private apiUrl = 'http://localhost:3000/';
 
   sendMessage(endpoint: string, data: any) {
     return this.http.post(this.apiUrl + endpoint, data);
