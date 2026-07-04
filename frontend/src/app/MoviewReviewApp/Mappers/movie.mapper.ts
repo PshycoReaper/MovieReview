@@ -6,7 +6,7 @@ export class MovieMapper {
 
     return {
 
-      id: movie.id,
+      _id: movie.id,
 
       title: movie.title,
 

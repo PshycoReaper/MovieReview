@@ -76,6 +76,7 @@ export class ReviewComponent {
     this.dbConexion.getReviews().subscribe({
       next: (response: Review[]) => {
         this.reviewsFromBackend.set(response);
+        //console.log(this.reviewsFromBackend)
       },
 
       error: (err) => {

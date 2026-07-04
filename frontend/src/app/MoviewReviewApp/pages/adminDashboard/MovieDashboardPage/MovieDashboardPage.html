@@ -162,7 +162,7 @@
 
                             <td>
 
-                                /*{{ pelicula.calificacion }}*/ 
+                                /*{{ pelicula.calificacion }}*/
 
                             </td>
 
@@ -594,16 +594,17 @@
         <tbody class="divide-y divide-slate-200">
 
           <!-- Ejemplo -->
+          @for(movie of moviesCollection(); track movie._id){
           <tr class="hover:bg-slate-50 transition">
 
             <td class="px-6 py-4 text-sm font-semibold text-slate-700">
-              1
+             {{movie._id}}
             </td>
 
             <td class="px-6 py-4">
 
               <div class="font-semibold text-slate-800">
-                Interstellar
+                {{movie.title}}
               </div>
 
             </td>
@@ -611,8 +612,7 @@
             <td class="px-6 py-4 text-sm text-slate-500 max-w-xs">
 
               <p class="line-clamp-2">
-                Un grupo de exploradores viaja a través de un agujero de gusano
-                para encontrar un nuevo hogar para la humanidad.
+               {{movie.overview}}
               </p>
 
             </td>
@@ -620,7 +620,7 @@
             <!-- Poster -->
             <td class="px-6 py-4">
 
-              <img src="https://image.tmdb.org/t/p/w200/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
+              <img [src]=movie.poster
                 class="w-16 h-24 rounded-lg object-cover shadow">
 
             </td>
@@ -628,20 +628,20 @@
             <!-- Backdrop -->
             <td class="px-6 py-4">
 
-              <img src="https://image.tmdb.org/t/p/w300/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"
+              <img [src]=movie.backdrop
                 class="w-28 h-16 rounded-lg object-cover shadow">
 
             </td>
 
             <td class="px-6 py-4 text-sm text-slate-600">
-              07/11/2014
+              {{movie.releaseDate}}
             </td>
 
             <td class="px-6 py-4">
 
               <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">
 
-                ⭐ 8.7
+                ⭐ {{movie.rating}}
 
               </span>
 
@@ -652,7 +652,7 @@
               <div class="flex flex-wrap gap-2">
 
                 <span class="bg-indigo-100 text-indigo-700 text-xs px-3 py-1 rounded-full">
-                  Ciencia ficción
+                 {{movie.genres[0]}}
                 </span>
 
                 <span class="bg-indigo-100 text-indigo-700 text-xs px-3 py-1 rounded-full">
@@ -668,7 +668,7 @@
               <div class="flex flex-wrap gap-2">
 
                 <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
-                  Inglés
+                  {{movie.language}}
                 </span>
 
               </div>
@@ -697,6 +697,8 @@
             </td>
 
           </tr>
+          }
+
 
         </tbody>
 
@@ -742,9 +744,7 @@
     <!-- Body -->
     <div class="p-8">
 
-      <form 
-      (ngSubmit)="validarPelicula()"
-      [formGroup]="formulario" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form (ngSubmit)="validarPelicula()" [formGroup]="formulario" class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         <!-- Título -->
         <div>
@@ -833,7 +833,7 @@
           </label>
 
           <!--<input type="text" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">-->
-          <input formControlName="poster" type="file"
+          <input formControlName="poster" type="file" accept="image/*"   (change)="onPosterSelected($event)"
             class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
 
         </div>
@@ -846,7 +846,7 @@
           </label>
 
           <!--<input type="text" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">-->
-          <input formControlName="backdrop" type="file" name="" id=""
+          <input formControlName="backdrop" type="file"  accept="image/*"   (change)="onBackdropSelected($event)"name="" id=""
             class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
 
         </div>
@@ -867,9 +867,8 @@
 
         <div>
 
-          <button
-           type="submit"
-           class="px-6 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition shadow">
+          <button type="submit"
+            class="px-6 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition shadow">
 
             Guardar Película
 

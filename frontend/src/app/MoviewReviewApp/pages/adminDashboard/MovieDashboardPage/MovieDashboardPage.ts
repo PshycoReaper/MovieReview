@@ -1,21 +1,19 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Movie } from '../../../Interfaces/movie.interface';
 import { HttpClient } from '@angular/common/http';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DBconexion } from '../../../services/DataBase/dbconexion';
+import { TableComponent } from '../../../components/Dashboard/Table.component/Table.component';
 
 @Component({
   selector: 'movie-dashboard-page',
-  imports: [ReactiveFormsModule, NgIf],
+  imports: [ReactiveFormsModule, NgIf, TableComponent],
   templateUrl: './MovieDashboardPage.html',
 })
-
 export class MovieDashboardPage {
+  //Injeccion del servicio DB
+  private DBconexion = inject(DBconexion);
 
   //PARA ABRIR & CERRRAR MODAL
 
@@ -37,9 +35,9 @@ export class MovieDashboardPage {
 
   //TODOS LOS DATOS DEL FORM SON REQUERIDOS
   constructor(private fb: FormBuilder) {
+    this.getMovies();
 
     this.formulario = this.fb.group({
-
       title: ['', Validators.required],
 
       overview: ['', Validators.required],
@@ -54,14 +52,12 @@ export class MovieDashboardPage {
 
       genres: ['', Validators.required],
 
-      languages: ['', Validators.required]
-
+      languages: ['', Validators.required],
     });
   }
 
   //SI NO HAY ERRORES O CAMPOS VACÍOS LO ENVIAMOS
   validarPelicula() {
-
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       return;
@@ -74,6 +70,42 @@ export class MovieDashboardPage {
     this.cerrarModal();
   }
 
+  onPosterSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.formulario.patchValue({
+        poster: reader.result as string,
+      });
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  onBackdropSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.formulario.patchValue({
+        backdrop: reader.result as string,
+      });
+    };
+
+    reader.readAsDataURL(file);
+  }
+
   sendPelicula() {
     const datosNuevaPeli: Movie = {
       title: this.formulario.value.title,
@@ -83,12 +115,41 @@ export class MovieDashboardPage {
       releaseDate: this.formulario.value.release_date,
       rating: this.formulario.value.rating,
       genres: this.formulario.value.genres,
-      language: this.formulario.value.languages
+      language: this.formulario.value.languages,
+    };
+
+    this.DBconexion.postMovie(datosNuevaPeli).subscribe({
+      next: () => {
+        console.log('✅ Reseña enviada correctamente');
+
+        // Cerrar y limpiar formulario
+        this.cerrarModal();
+      },
+
+      error: (err) => {
+        console.error('❌ Error al enviar la reseña:', err);
+      },
+    });
   }
 
-  //console.log(datosNuevaPeli); FUNCIONA; REVISAR LO DE LAS IMAGENES
+  getMovies() {
+    this.DBconexion.getMovies().subscribe({
+      next: (response: Movie[]) => {
+        console.log(response);
+        this.moviesCollection.set(response);
+        console.log(this.moviesCollection);
+      },
 
-  //HACER EL POST PARA LA PELÍCULA
+      error: (err) => {
+        console.error('❌ Error al obtener las reseñas:', err);
+      },
+    });
+  }
+}
+
+//console.log(datosNuevaPeli); FUNCIONA; REVISAR LO DE LAS IMAGENES
+
+//HACER EL POST PARA LA PELÍCULA
 /*
   this.dbConexion.postPelicula(datosNuevaPeli).subscribe({
       next: () => {
@@ -101,10 +162,6 @@ export class MovieDashboardPage {
         console.error("Error!!!! A llorar");
       },
     });*/
-
-
-}
-
 
 /*
   // Control del modal
@@ -169,5 +226,3 @@ export class MovieDashboardPage {
     this.cerrarModal();
 
   }*/
-
-}
