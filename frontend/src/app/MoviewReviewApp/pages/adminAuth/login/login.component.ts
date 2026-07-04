@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -17,12 +17,15 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  adminName = signal<string>('');
+
   iniciarSesion() {
     this.authService.login(this.email, this.password).subscribe({
       next: (respuesta: any) => {
         localStorage.setItem('token', respuesta.token);
 
         alert('Bienvenido ' + respuesta.admin.userName);
+        this.authService.adminName.set(respuesta.admin.userName);
 
         this.router.navigate(['/admin/main']);
       },

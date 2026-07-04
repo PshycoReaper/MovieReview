@@ -7,9 +7,6 @@ const postReview = async (req, res) => {
         const newReview = new review(req.body);
         console.log("Lo que se va a guardar en la base de datos:", newReview);
 
-
-        // Generar un ID aleatorio para la reseña 
-        newReview.id = Math.floor(Math.random() * 1000000);
         // Generar un ID aleatorio TEMPORAL para la pelicula
         newReview.idMovie = Math.floor(Math.random() * 1000000);
          // Convertir a número decimal
@@ -33,4 +30,15 @@ const getReviews = async (req, res) => {
     }
 };
 
-module.exports = { postReview, getReviews };
+const deleteReview = async (req, res) => {
+    try {
+        const reviewId = req.params.id;
+        const deletedReview = await review.findByIdAndDelete(reviewId);
+        res.status(200).json(deletedReview);
+    } catch (error) {
+        console.error("Error al eliminar la reseña:", error);
+        res.status(500).json({ message: "Error al eliminar la reseña" });
+    }
+};
+
+module.exports = { postReview, getReviews, deleteReview };

@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal, inject } from '@angular/core';
+import {AuthService} from '../../../services/auth/auth';
+
 
 
 interface MenuItem {
@@ -16,7 +17,9 @@ interface MenuItem {
   templateUrl: './SideBar.Component.html',
 })
 export class SideBarComponent {
-  private name = signal<string>('');
+  private authService = inject(AuthService);
+  adminName = signal<string>(this.authService.adminName());
+
   adminMenu = signal<MenuItem[]>([
     {
       title: 'Panel de Control',
@@ -44,14 +47,6 @@ export class SideBarComponent {
   ]);
 
   accountMenu = signal<MenuItem[]>([
-    {
-      title: 'Mi Perfil',
-      route: '/profile',
-    },
-    {
-      title: 'Configuración',
-      route: '/settings',
-    },
     {
       title: 'Cerrar sesión',
       route: '',

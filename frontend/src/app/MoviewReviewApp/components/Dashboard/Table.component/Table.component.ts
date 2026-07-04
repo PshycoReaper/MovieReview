@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { TableColumn } from '../../../Interfaces/tableColumns.interface';
 
 @Component({
@@ -14,11 +14,15 @@ export class TableComponent {
 
   title = input.required<string>();
 
-  buttonText = input.required<string>();
+  buttonText = input<string>();
 
   columns = input.required<TableColumn[]>();
 
   data = input.required<any[]>();
+
+  addRequired = input<boolean>(false);
+
+  trackBy = input<string>('_id')
 
   // ==========================
   // Outputs

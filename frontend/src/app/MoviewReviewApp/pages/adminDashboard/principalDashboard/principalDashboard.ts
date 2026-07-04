@@ -31,7 +31,6 @@ export class PrincipalDashboard {
     });
   }
 
-
   title = signal<string>('Peliculas');
   buttonText = signal<string>('Agregar pelicula');
 
@@ -56,11 +55,7 @@ export class PrincipalDashboard {
     },
   ];
 
-
-
-  deleteMovie($event: any) {
-    throw new Error('Method not implemented.');
-  }
+  deleteMovie($event: any) {}
   navigateToEditMovie($event: any) {
     throw new Error('Method not implemented.');
   }

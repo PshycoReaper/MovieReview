@@ -18,6 +18,9 @@ export class DBconexion {
   getReviews() {
     return this.http.get<Review[]>(this.apiUrl + 'api/movies/getReviews');
   }
+  deleteReview(id: number) {
+    return this.http.delete(this.apiUrl + `api/movies/deleteReview/${id}`);
+  }
   /*sendMessage(endpoint: string, data: any) {
     return this.http.post(this.apiUrl + endpoint, data);
   }*/

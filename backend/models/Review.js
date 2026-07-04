@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 const reviewSchema = new mongoose.Schema(
     {
-        id: {
-            type: Number,
-            required: true,
-        },
         idMovie: {
             type: Number,
             required: true

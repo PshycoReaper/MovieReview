@@ -20,7 +20,8 @@
 
     </div>
 
-    <button (click)="create.emit()"
+   @if (addRequired()) {
+     <button (click)="create.emit()"
       class="rounded-xl bg-cyan-500 px-5 py-3 font-medium text-white transition hover:bg-cyan-600">
 
       <i class="fa-solid fa-plus mr-2"></i>
@@ -28,6 +29,7 @@
       {{ buttonText() }}
 
     </button>
+   }
 
   </div>
 
@@ -54,11 +56,14 @@
 
           }
 
-          <th class="px-6 py-4 text-center text-sm font-semibold uppercase tracking-wider text-slate-600">
+
+          <th
+            class="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider text-slate-600">
 
             Acciones
 
           </th>
+
 
         </tr>
 
@@ -68,7 +73,7 @@
 
       <tbody class="divide-y divide-slate-200">
 
-        @for(row of data(); track row.id){
+        @for(row of data(); track row[trackBy()]){
 
         <tr class="transition hover:bg-slate-50">
 
@@ -92,6 +97,7 @@
 
           <td class="px-6 py-5">
 
+
             <div class="flex justify-center gap-2">
 
               <button (click)="edit.emit(row)"
@@ -109,6 +115,7 @@
               </button>
 
             </div>
+
 
           </td>
 

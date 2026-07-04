@@ -65,11 +65,14 @@ export const routes: Routes = [
           import('./MoviewReviewApp/pages/adminDashboard/MovieDashboardPage/MovieDashboardPage')
             .then(m => m.MovieDashboardPage),
       },
+      {
+        path: 'reviews',
+        loadComponent: () =>
+          import('./MoviewReviewApp/pages/adminDashboard/ReviewDashboardPage/ReviewDashboardPage')
+            .then(m => m.ReviewDashboardPage),
+      }
 
-      // Futuro
-      // reviews
-      // users
-      // settings
+
 
     ],
   },

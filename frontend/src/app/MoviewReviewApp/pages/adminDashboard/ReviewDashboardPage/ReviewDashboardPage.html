@@ -1,0 +1,6 @@
+<div class="flex flex-direction flex-col gap-6">
+  <form-review  [modaltitle]="modalTittle()"  [buttonText]="buttonText()" />
+
+  <table-component [title]="title()" [columns]="reviewColumns" [data]="reviewsArray()" [addRequired]="false" [trackBy]="trackBy()" (edit)="editReview($event)" (delete)="deleteReview($event)" />
+
+</div>
