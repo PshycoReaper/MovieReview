@@ -9,10 +9,8 @@ const postReview = async (req, res) => {
 
         // Generar un ID aleatorio TEMPORAL para la pelicula
         newReview.idMovie = Math.floor(Math.random() * 1000000);
-         // Convertir a número decimal
 
         const savedReview = await newReview.save();
-
         res.status(201).json(savedReview);
     } catch (error) {
         console.error("Error al guardar la reseña:", error);
@@ -34,11 +32,113 @@ const deleteReview = async (req, res) => {
     try {
         const reviewId = req.params.id;
         const deletedReview = await review.findByIdAndDelete(reviewId);
-        res.status(200).json(deletedReview);
+        
+        if (!deletedReview) {
+            return res.status(404).json({ message: "Reseña no encontrada" });
+        }
+        
+        res.status(200).json({ 
+            message: "Reseña eliminada exitosamente", 
+            deletedReview 
+        });
     } catch (error) {
         console.error("Error al eliminar la reseña:", error);
         res.status(500).json({ message: "Error al eliminar la reseña" });
     }
 };
 
-module.exports = { postReview, getReviews, deleteReview };
+// ============================================
+// UPDATE REVIEW - CORREGIDO
+// ============================================
+const updateReview = async (req, res) => {
+    try {
+        console.log("\n========== UPDATE REVIEW ==========");
+        const reviewId = req.params.id;
+        console.log("ID de la reseña a actualizar:", reviewId);
+        console.log("Datos recibidos para actualizar:", req.body);
+
+        // Verificar que el ID sea válido
+        if (!reviewId) {
+            return res.status(400).json({ 
+                message: "ID de reseña no proporcionado" 
+            });
+        }
+
+        // Opciones para findByIdAndUpdate
+        const options = {
+            new: true,           // Retorna el documento actualizado
+            runValidators: true, // Ejecuta las validaciones del schema
+            context: 'query'     // Contexto para las validaciones
+        };
+
+        // Actualizar la reseña
+        const updatedReview = await review.findByIdAndUpdate(
+            reviewId, 
+            req.body, 
+            options
+        );
+
+        // Verificar si la reseña existe
+        if (!updatedReview) {
+            console.log("Reseña no encontrada con ID:", reviewId);
+            return res.status(404).json({ 
+                message: "Reseña no encontrada" 
+            });
+        }
+
+        console.log("Reseña actualizada exitosamente:", updatedReview);
+        res.status(200).json({
+            message: "Reseña actualizada exitosamente",
+            review: updatedReview
+        });
+
+    } catch (error) {
+        console.error("Error al actualizar la reseña:", error);
+        
+        // Manejar errores específicos de MongoDB
+        if (error.name === 'CastError') {
+            return res.status(400).json({ 
+                message: "ID de reseña inválido" 
+            });
+        }
+        
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ 
+                message: "Error de validación", 
+                errors: error.errors 
+            });
+        }
+
+        res.status(500).json({ 
+            message: "Error al actualizar la reseña",
+            error: error.message 
+        });
+    }
+};
+
+// ============================================
+// FUNCIÓN ADICIONAL: Obtener una reseña específica
+// ============================================
+const getReviewById = async (req, res) => {
+    try {
+        const reviewId = req.params.id;
+        const foundReview = await review.findById(reviewId);
+        
+        if (!foundReview) {
+            return res.status(404).json({ message: "Reseña no encontrada" });
+        }
+        
+        res.status(200).json(foundReview);
+    } catch (error) {
+        console.error("Error al obtener la reseña:", error);
+        res.status(500).json({ message: "Error al obtener la reseña" });
+    }
+};
+
+module.exports = { 
+    postReview, 
+    getReviews, 
+    deleteReview, 
+    updateReview,
+    getReviewById  // Exportar la nueva función
+};
