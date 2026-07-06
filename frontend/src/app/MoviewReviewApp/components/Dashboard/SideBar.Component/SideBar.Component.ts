@@ -56,5 +56,6 @@ export class SideBarComponent {
   ]);
   logout() {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('adminName');
   }
 }
