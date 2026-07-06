@@ -744,6 +744,56 @@
     <!-- Body -->
     <div class="p-8">
 
+      <!--BUSCADOR -->
+      <label class="block mb-2 font-medium text-slate-700"> Ingresa una película disponible en TMDB </label>
+
+      <input [formControl]="buscarControl" class="w-full border rounded-xl px-4 py-3" type="text"
+        placeholder="Buscar película...">
+
+      <button> Buscar </button>
+
+      <!--respuestas de busdqueda-->
+
+      @if(resultadosBusqueda().length > 0){
+      <div class="border rounded-xl overflow-hidden mb-8">
+        @for (pelicula of resultadosBusqueda(); track pelicula) {
+        <div (click)="seleccionarPelicula(pelicula)"
+          class="flex gap-4 items-center p-3 hover:bg-slate-100 cursor-pointer transition">
+
+          @if (pelicula.poster) {
+
+          <img [src]="'https://image.tmdb.org/t/p/w92' + pelicula.poster">
+
+          } @else {
+
+          <div class="w-14 h-20 bg-slate-200 rounded flex items-center justify-center">
+            Sin imagen
+          </div>
+
+          }
+
+          <div>
+
+            <h3 class="font-semibold">
+
+              {{pelicula.title}}
+
+            </h3>
+
+            <p class="text-sm text-gray-500">
+
+              {{pelicula.release_date}}
+
+            </p>
+
+          </div>
+
+        </div>
+
+        }
+      </div>
+      }
+
       <form (ngSubmit)="validarPelicula()" [formGroup]="formulario" class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         <!-- Título -->

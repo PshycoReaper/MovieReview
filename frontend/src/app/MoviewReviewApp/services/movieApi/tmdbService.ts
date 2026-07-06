@@ -24,4 +24,26 @@ export class TmdbService {
       })
       .pipe(map((response) => response.results.map(MovieMapper.fromTmdb)));
   }
+
+  //MÉTODO PARA BUSCAR PELÍCULAS
+  buscarPeliculas(nombre: string) {
+
+    return this.http.get<any>(
+      `${this.api}/search/movie`,
+      {
+        headers: this.headers,
+        params: {
+          query: nombre,
+          language: 'es-MX'
+        }
+      }
+    )
+      .pipe(
+        map(response =>
+          response.results.map(MovieMapper.fromTmdb)
+        )
+      );
+
+  }
+
 }
