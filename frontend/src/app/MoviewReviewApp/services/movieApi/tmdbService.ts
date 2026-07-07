@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../enviroments/enviroment';
 import { map } from 'rxjs';
 import { MovieMapper } from '../../Mappers/movie.mapper';
+import { Genre } from '../../Interfaces/genre.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -43,6 +44,21 @@ export class TmdbService {
           response.results.map(MovieMapper.fromTmdb)
         )
       );
+
+  }
+
+  //PARA EL GÉNERO; PUESTO QUE EN BUSCAR PELÍCULAS SOLO ARROJA NÚMEROS
+  getGenres() {
+
+    return this.http.get<{ genres: Genre[] }>(
+      `${this.api}/genre/movie/list`,
+      {
+        headers: this.headers,
+        params: {
+          language: 'es-MX'
+        }
+      }
+    );
 
   }
 

@@ -8,6 +8,7 @@ import { TableComponent } from '../../../components/Dashboard/Table.component/Ta
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { TmdbService } from '../../../services/movieApi/tmdbService';
 import { Title } from '@angular/platform-browser';
+import { Genre } from '../../../Interfaces/genre.interface';
 
 @Component({
   selector: 'movie-dashboard-page',
@@ -23,7 +24,6 @@ export class MovieDashboardPage {
   private tmdbService = inject(TmdbService);
 
   //PARA ABRIR & CERRRAR MODAL
-
   mostrarModal: boolean = false;
 
   abrirModal(): void {
@@ -32,20 +32,43 @@ export class MovieDashboardPage {
 
   cerrarModal(): void {
     this.mostrarModal = false;
+    this.mostrarModal = false;
+
+    this.formulario.reset();
+
+    this.posterPreview.set('');
+
+    this.backdropPreview.set('');
+
+    this.peliculaEditando.set(null);
+
+    this.modoEdicion.set(false);
   }
 
   //LÓGICA PARA EL FORMULARIO DE AGREGAR MOVIE
-
   moviesCollection = signal<Movie[]>([]);
-
   formulario!: FormGroup;
+
+
 
   //PARA EL BUSCADOR DE PELÍCULAS
   buscarControl = new FormControl('');
-
   resultadosBusqueda = signal<any[]>([]);
-
   peliculaSeleccionada = signal<any | null>(null);
+
+
+  //PARA EL GÉNERO DE PELÍCULAS
+  genresCatalog = signal<Genre[]>([]);
+
+
+  //PARA EL POSTER Y EL BANNER DE LA PELICULA, YA QUE MANEJAMOS INPUT FILE
+  posterPreview = signal<string>('');
+  backdropPreview = signal<string>('');
+
+
+  //PARA LA LÓGICA DE EDITAR PELICULA
+  modoEdicion = signal(false);
+  peliculaEditando = signal<Movie | null>(null);
 
 
   //TODOS LOS DATOS DEL FORM SON REQUERIDOS
@@ -80,7 +103,21 @@ export class MovieDashboardPage {
       console.log(this.resultadosBusqueda);
     });
 
+    //PARA EL GÉNERO DE LA PELI
+
+    this.tmdbService.getGenres().subscribe({
+
+      next: response => {
+
+        this.genresCatalog.set(response.genres);
+
+      }
+
+    });
+
   }
+
+
 
   //SI NO HAY ERRORES O CAMPOS VACÍOS LO ENVIAMOS
   validarPelicula() {
@@ -91,17 +128,30 @@ export class MovieDashboardPage {
 
     //PROBAMOS CON CONSOLE LOG PRIMERO
     console.log(this.formulario.value);
-    this.sendPelicula();
 
+    if (this.modoEdicion()) {
+
+      this.actualizarPelicula();
+
+    }
+    else {
+
+      this.sendPelicula();
+
+    }
     this.cerrarModal();
+
   }
 
   //seleccionar película
   seleccionarPelicula(movie: any): void {
 
+
     this.peliculaSeleccionada.set(movie);
     //console.log(movie);
     //console.log(movie.releaseDate);
+
+    //PARA LOS IDIOMAS
 
     const idiomas: Record<string, string> = {
 
@@ -117,6 +167,29 @@ export class MovieDashboardPage {
 
     };
 
+    //PARA EL GÉNERO
+
+    const nombres = movie.genres
+      .map((id: number) => {
+
+        return this.genresCatalog()
+          .find(g => g.id === id)?.name;
+
+      })
+      .filter(Boolean);
+
+    //PARA LOS POSTERS Y BANNERS
+
+    const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster}`;
+
+    const backdropUrl = `https://image.tmdb.org/t/p/w780${movie.backdrop}`;
+
+    this.posterPreview.set(posterUrl);
+
+    this.backdropPreview.set(backdropUrl);
+
+
+
     this.formulario.patchValue({
 
       title: movie.title,
@@ -125,15 +198,17 @@ export class MovieDashboardPage {
 
       release_date: movie.releaseDate,
 
-      genres: movie.genres,
+      genres: nombres.join(', '),
 
-      languages: idiomas[movie.language]
+      languages: idiomas[movie.language],
 
-      //poster: movie.poster,
+      poster: posterUrl,
 
-      //backdrop: movie.backdrop,
+      backdrop: backdropUrl,
 
     });
+
+    console.log(this.formulario.value);
 
   }
 
@@ -153,6 +228,9 @@ export class MovieDashboardPage {
     };
 
     reader.readAsDataURL(file);
+
+    this.posterPreview.set(URL.createObjectURL(file));
+
   }
 
   onBackdropSelected(event: Event) {
@@ -171,6 +249,7 @@ export class MovieDashboardPage {
     };
 
     reader.readAsDataURL(file);
+    this.backdropPreview.set(URL.createObjectURL(file));
   }
 
   sendPelicula() {
@@ -212,4 +291,103 @@ export class MovieDashboardPage {
       },
     });
   }
+
+  editarPelicula(movie: Movie) {
+    this.modoEdicion.set(true);
+
+    this.peliculaEditando.set(movie);
+
+    this.formulario.patchValue({
+
+      title: movie.title,
+
+      overview: movie.overview,
+
+      release_date: movie.releaseDate,
+
+      rating: movie.rating,
+
+      genres: movie.genres,
+
+      languages: movie.language,
+      poster: movie.poster,
+
+      backdrop: movie.backdrop
+
+    });
+    this.posterPreview.set(movie.poster);
+
+    this.backdropPreview.set(movie.backdrop);
+
+    this.abrirModal();
+
+  }
+
+  actualizarPelicula() {
+
+    const pelicula: Movie = {
+
+      _id: this.peliculaEditando()?._id,
+
+      title: this.formulario.value.title,
+
+      overview: this.formulario.value.overview,
+
+      poster: this.formulario.value.poster,
+      backdrop: this.formulario.value.backdrop,
+
+      releaseDate: this.formulario.value.release_date,
+
+      rating: this.formulario.value.rating,
+
+      genres: this.formulario.value.genres,
+
+      language: this.formulario.value.languages
+
+    };
+
+    this.DBconexion.updateMovie(pelicula._id!, pelicula).subscribe({
+
+        next: (respuesta) => {
+
+            console.log("Película actualizada!!! LO LOGRAMOS", respuesta);
+            alert("Película Actualizada Existosamente");
+
+            this.cerrarModal();
+
+        },
+
+        error: (error) => {
+
+            console.error(error);
+
+        }
+
+    });
+
+  }
+
+  eliminarPelicula(movie: Movie) {
+
+    if (!confirm(`¿Eliminar "${movie.title}"?`))
+      return;
+
+    this.DBconexion.deleteMovie(movie._id!).subscribe({
+
+        next: (respuesta) => {
+
+            console.log("Película eliminada exitosamente!!", respuesta);
+            alert("Película Eliminada Existosamente");
+        },
+
+        error: (error) => {
+
+            console.error(error);
+
+        }
+
+    });
+
+  }
+
 }

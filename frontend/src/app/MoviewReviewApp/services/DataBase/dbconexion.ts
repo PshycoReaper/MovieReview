@@ -50,4 +50,12 @@ export class DBconexion {
   getMovies(): Observable<Movie[]> {
     return this.http.get<Movie[]>(this.apiUrl + 'api/movies/getMovies');
   }
+
+  updateMovie(id: number, data: Movie): Observable<any> {
+    return this.http.put(this.apiUrl + `api/movies/updateMovie/${id}`, data);
+  }
+
+  deleteMovie(id: number): Observable<any> {
+    return this.http.delete(this.apiUrl + `api/movies/deleteMovie/${id}`)
+  }
 }

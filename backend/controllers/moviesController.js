@@ -28,6 +28,76 @@ const getMovies= async (req, res) => {
     }
 };
 
-module.exports ={
-    postMovie, getMovies
+
+const updateMovie = async (req, res) => {
+    try {
+        console.log("\n========== UPDATE Movie ==========");
+
+        const {
+            id
+        } = req.params;
+
+        console.log("ID:", id);
+
+        console.log("Body recibido:", req.body);
+
+        const updatedMovie = await movie.findByIdAndUpdate(id, req.body, {
+            new: true,
+            runValidators: true
+        });
+
+        if (!updatedMovie) {
+            return res.status(404).json({
+                message: "Película no encontrada"
+            });
+        }
+
+        console.log("Película actualizada exitosamente:", updatedMovie);
+
+        res.status(200).json({
+            message: "Película actualizada exitosamente",
+            movieUpdated: updatedMovie
+        });
+
+        // res.status(200).json(updatedMovie);
+
+
+    } catch {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Error al actualizar la película"
+        });
+    }
+}
+
+const deleteMovie = async (req, res) => {
+    try {
+        const deletedMovieId = req.params.id;
+        const deletedMovie = await movie.findByIdAndDelete(deletedMovieId);
+
+        if (!deletedMovie) {
+            return res.status(404).json({
+                message: "Película no encontrada"
+            });
+        }
+
+        res.status(200).json({
+            message: "Película eliminada exitosamente",
+            deletedMovie
+        });
+
+    } catch (error) {
+        console.error("Error al eliminar películas:", error);
+        res.status(500).json({
+            message: "Error al eliminar película"
+        });
+    }
+}
+
+module.exports = {
+    postMovie,
+    getMovies,
+    updateMovie,
+    deleteMovie
 }
