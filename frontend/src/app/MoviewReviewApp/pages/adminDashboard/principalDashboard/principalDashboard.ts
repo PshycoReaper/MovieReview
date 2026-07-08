@@ -26,6 +26,9 @@ export class PrincipalDashboard {
     this.tmdbService.getMovies().subscribe((movies: Movie[]) => {
       this.moviesApiArray.set(movies);
     });
+    this.dbconexion.getMovies().subscribe((movies: Movie[])=>{
+      this.moviesDBArray.set(movies)
+    })
     this.dbconexion.getReviews().subscribe((reviews: Review[]) => {
       this.reviewsArray.set(reviews);
     });

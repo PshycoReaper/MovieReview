@@ -1,12 +1,9 @@
 import { Movie } from '../Interfaces/movie.interface';
 
 export class MovieMapper {
-
   static fromTmdb(movie: any): Movie {
-
     return {
-
-      _id: movie.id,
+      _id: movie.id || movie._id,
 
       title: movie.title,
 
@@ -22,10 +19,7 @@ export class MovieMapper {
 
       genres: movie.genre_ids,
 
-      language: movie.original_language
-
+      language: movie.original_language,
     };
-
   }
-
 }

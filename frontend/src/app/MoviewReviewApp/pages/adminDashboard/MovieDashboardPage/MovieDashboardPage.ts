@@ -1,393 +1,147 @@
-import { CommonModule, NgIf } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, viewChild } from '@angular/core';
 import { Movie } from '../../../Interfaces/movie.interface';
-import { HttpClient } from '@angular/common/http';
-import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DBconexion } from '../../../services/DataBase/dbconexion';
-import { TableComponent } from '../../../components/Dashboard/Table.component/Table.component';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { TmdbService } from '../../../services/movieApi/tmdbService';
-import { Title } from '@angular/platform-browser';
 import { Genre } from '../../../Interfaces/genre.interface';
+import { MovieForm } from '../../../components/MoviePage/MoviewFormComponent/MoviewFormComponent';
 
 @Component({
   selector: 'movie-dashboard-page',
-  imports: [ReactiveFormsModule, NgIf, TableComponent],
+  imports: [MovieForm],
   templateUrl: './MovieDashboardPage.html',
 })
-
-
 export class MovieDashboardPage {
-  //Injeccion del servicio DB
+  // Injeccion del servicio DB
   private DBconexion = inject(DBconexion);
-  //INJECCION DEL SERVICIO TMDB
+
+  // INJECCION DEL SERVICIO TMDB
   private tmdbService = inject(TmdbService);
 
-  //PARA ABRIR & CERRRAR MODAL
-  mostrarModal: boolean = false;
+  // Referencia al componente MovieForm
+  movieForm = viewChild(MovieForm);
 
-  abrirModal(): void {
-    this.mostrarModal = true;
-  }
-
-  cerrarModal(): void {
-    this.mostrarModal = false;
-    this.mostrarModal = false;
-
-    this.formulario.reset();
-
-    this.posterPreview.set('');
-
-    this.backdropPreview.set('');
-
-    this.peliculaEditando.set(null);
-
-    this.modoEdicion.set(false);
-  }
-
-  //LÓGICA PARA EL FORMULARIO DE AGREGAR MOVIE
+  // LÓGICA PARA EL FORMULARIO DE AGREGAR MOVIE
   moviesCollection = signal<Movie[]>([]);
-  formulario!: FormGroup;
 
-
-
-  //PARA EL BUSCADOR DE PELÍCULAS
-  buscarControl = new FormControl('');
-  resultadosBusqueda = signal<any[]>([]);
-  peliculaSeleccionada = signal<any | null>(null);
-
-
-  //PARA EL GÉNERO DE PELÍCULAS
+  // PARA EL GÉNERO DE PELÍCULAS
   genresCatalog = signal<Genre[]>([]);
 
-
-  //PARA EL POSTER Y EL BANNER DE LA PELICULA, YA QUE MANEJAMOS INPUT FILE
-  posterPreview = signal<string>('');
-  backdropPreview = signal<string>('');
-
-
-  //PARA LA LÓGICA DE EDITAR PELICULA
-  modoEdicion = signal(false);
-  peliculaEditando = signal<Movie | null>(null);
-
-
-  //TODOS LOS DATOS DEL FORM SON REQUERIDOS
-  constructor(private fb: FormBuilder) {
+  constructor() {
     this.getMovies();
-
-    this.formulario = this.fb.group({
-      title: ['', Validators.required],
-
-      overview: ['', Validators.required],
-
-      poster: ['', Validators.required],
-
-      backdrop: ['', Validators.required],
-
-      release_date: ['', Validators.required],
-
-      rating: ['', Validators.required],
-
-      genres: ['', Validators.required],
-
-      languages: ['', Validators.required],
-    });
-
-    //PARA EL BUSCADOR
-    this.buscarControl.valueChanges.pipe(debounceTime(400), distinctUntilChanged(), switchMap(nombre =>
-      this.tmdbService.buscarPeliculas(nombre ?? '')
-    )
-    ).subscribe(pelis => {
-      console.log("SI FUNCIONA");
-      this.resultadosBusqueda.set(pelis);
-      console.log(this.resultadosBusqueda);
-    });
-
-    //PARA EL GÉNERO DE LA PELI
-
-    this.tmdbService.getGenres().subscribe({
-
-      next: response => {
-
-        this.genresCatalog.set(response.genres);
-
-      }
-
-    });
-
+    this.loadGenres();
   }
 
+  // ABRIR MODAL PARA AGREGAR
+  abrirModal(): void {
+    this.movieForm()?.open();
+  }
 
+  // ABRIR MODAL PARA EDITAR
+  editarPelicula(movie: Movie): void {
+    this.movieForm()?.open(movie);
+  }
 
-  //SI NO HAY ERRORES O CAMPOS VACÍOS LO ENVIAMOS
-  validarPelicula() {
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
+  // MANEJAR CUANDO SE GUARDA UNA PELÍCULA (desde MovieForm)
+  onMovieSaved(movie: Movie): void {
+    if (movie._id) {
+      // Si tiene _id, es una actualización
+      this.actualizarPelicula(movie);
+    } else {
+      // Si no tiene _id, es una nueva
+      this.sendPelicula(movie);
+    }
+  }
+
+  // ENVIAR NUEVA PELÍCULA
+  sendPelicula(movie: Movie): void {
+    console.log('Enviando nueva película:', movie);
+
+    this.DBconexion.postMovie(movie).subscribe({
+      next: (response) => {
+        console.log('✅ Película agregada correctamente', response);
+        alert('¡Película agregada exitosamente!');
+        this.getMovies();
+      },
+      error: (err) => {
+        console.error('❌ Error al enviar la película:', err);
+        alert('Error al agregar la película. Por favor, intenta de nuevo.');
+      },
+    });
+  }
+
+  // ACTUALIZAR PELÍCULA
+  actualizarPelicula(movie: Movie): void {
+    const peliculaId = movie._id;
+
+    if (!peliculaId) {
+      console.error('❌ No hay ID de película para actualizar');
       return;
     }
 
-    //PROBAMOS CON CONSOLE LOG PRIMERO
-    console.log(this.formulario.value);
+    console.log('Actualizando película:', movie);
 
-    if (this.modoEdicion()) {
-
-      this.actualizarPelicula();
-
-    }
-    else {
-
-      this.sendPelicula();
-
-    }
-    this.cerrarModal();
-
-  }
-
-  //seleccionar película
-  seleccionarPelicula(movie: any): void {
-
-
-    this.peliculaSeleccionada.set(movie);
-    //console.log(movie);
-    //console.log(movie.releaseDate);
-
-    //PARA LOS IDIOMAS
-
-    const idiomas: Record<string, string> = {
-
-      en: 'Inglés',
-
-      es: 'Español',
-
-      fr: 'Francés',
-
-      ja: 'Japonés',
-
-      ko: 'Coreano'
-
-    };
-
-    //PARA EL GÉNERO
-
-    const nombres = movie.genres
-      .map((id: number) => {
-
-        return this.genresCatalog()
-          .find(g => g.id === id)?.name;
-
-      })
-      .filter(Boolean);
-
-    //PARA LOS POSTERS Y BANNERS
-
-    const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster}`;
-
-    const backdropUrl = `https://image.tmdb.org/t/p/w780${movie.backdrop}`;
-
-    this.posterPreview.set(posterUrl);
-
-    this.backdropPreview.set(backdropUrl);
-
-
-
-    this.formulario.patchValue({
-
-      title: movie.title,
-
-      overview: movie.overview,
-
-      release_date: movie.releaseDate,
-
-      genres: nombres.join(', '),
-
-      languages: idiomas[movie.language],
-
-      poster: posterUrl,
-
-      backdrop: backdropUrl,
-
-    });
-
-    console.log(this.formulario.value);
-
-  }
-
-  onPosterSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files?.length) return;
-
-    const file = input.files[0];
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.formulario.patchValue({
-        poster: reader.result as string,
-      });
-    };
-
-    reader.readAsDataURL(file);
-
-    this.posterPreview.set(URL.createObjectURL(file));
-
-  }
-
-  onBackdropSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files?.length) return;
-
-    const file = input.files[0];
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.formulario.patchValue({
-        backdrop: reader.result as string,
-      });
-    };
-
-    reader.readAsDataURL(file);
-    this.backdropPreview.set(URL.createObjectURL(file));
-  }
-
-  sendPelicula() {
-    const datosNuevaPeli: Movie = {
-      title: this.formulario.value.title,
-      overview: this.formulario.value.overview,
-      poster: this.formulario.value.poster,
-      backdrop: this.formulario.value.backdrop,
-      releaseDate: this.formulario.value.release_date,
-      rating: this.formulario.value.rating,
-      genres: this.formulario.value.genres,
-      language: this.formulario.value.languages,
-    };
-
-    this.DBconexion.postMovie(datosNuevaPeli).subscribe({
-      next: () => {
-        console.log('✅ Reseña enviada correctamente');
-
-        // Cerrar y limpiar formulario
-        this.cerrarModal();
+    this.DBconexion.updateMovie(peliculaId, movie).subscribe({
+      next: (respuesta) => {
+        console.log('✅ Película actualizada exitosamente', respuesta);
+        alert('¡Película actualizada exitosamente!');
+        this.getMovies();
       },
-
-      error: (err) => {
-        console.error('❌ Error al enviar la reseña:', err);
+      error: (error) => {
+        console.error('❌ Error al actualizar la película:', error);
+        alert('Error al actualizar la película. Por favor, intenta de nuevo.');
       },
     });
   }
 
-  getMovies() {
+  // ELIMINAR PELÍCULA
+  eliminarPelicula(movie: Movie): void {
+    if (!confirm(`¿Estás seguro de eliminar "${movie.title}"?`)) {
+      return;
+    }
+
+    if (!movie._id) {
+      console.error('❌ No hay ID para eliminar');
+      return;
+    }
+
+    console.log('Eliminando película:', movie._id);
+
+    this.DBconexion.deleteMovie(movie._id).subscribe({
+      next: (respuesta) => {
+        console.log('✅ Película eliminada exitosamente', respuesta);
+        alert('¡Película eliminada exitosamente!');
+        this.getMovies();
+      },
+      error: (error) => {
+        console.error('❌ Error al eliminar la película:', error);
+        alert('Error al eliminar la película. Por favor, intenta de nuevo.');
+      },
+    });
+  }
+
+  // OBTENER TODAS LAS PELÍCULAS
+  getMovies(): void {
     this.DBconexion.getMovies().subscribe({
       next: (response: Movie[]) => {
-        console.log(response);
+        console.log('Películas obtenidas:', response);
         this.moviesCollection.set(response);
-        console.log(this.moviesCollection);
       },
-
       error: (err) => {
-        console.error('❌ Error al obtener las reseñas:', err);
+        console.error('❌ Error al obtener las películas:', err);
       },
     });
   }
 
-  editarPelicula(movie: Movie) {
-    this.modoEdicion.set(true);
-
-    this.peliculaEditando.set(movie);
-
-    this.formulario.patchValue({
-
-      title: movie.title,
-
-      overview: movie.overview,
-
-      release_date: movie.releaseDate,
-
-      rating: movie.rating,
-
-      genres: movie.genres,
-
-      languages: movie.language,
-      poster: movie.poster,
-
-      backdrop: movie.backdrop
-
+  // CARGAR GÉNEROS
+  loadGenres(): void {
+    this.tmdbService.getGenres().subscribe({
+      next: (response) => {
+        this.genresCatalog.set(response.genres || []);
+        console.log('Géneros cargados:', this.genresCatalog());
+      },
+      error: (error) => {
+        console.error('Error al cargar géneros:', error);
+      },
     });
-    this.posterPreview.set(movie.poster);
-
-    this.backdropPreview.set(movie.backdrop);
-
-    this.abrirModal();
-
   }
-
-  actualizarPelicula() {
-
-    const pelicula: Movie = {
-
-      _id: this.peliculaEditando()?._id,
-
-      title: this.formulario.value.title,
-
-      overview: this.formulario.value.overview,
-
-      poster: this.formulario.value.poster,
-      backdrop: this.formulario.value.backdrop,
-
-      releaseDate: this.formulario.value.release_date,
-
-      rating: this.formulario.value.rating,
-
-      genres: this.formulario.value.genres,
-
-      language: this.formulario.value.languages
-
-    };
-
-    this.DBconexion.updateMovie(pelicula._id!, pelicula).subscribe({
-
-        next: (respuesta) => {
-
-            console.log("Película actualizada!!! LO LOGRAMOS", respuesta);
-            alert("Película Actualizada Existosamente");
-
-            this.cerrarModal();
-
-        },
-
-        error: (error) => {
-
-            console.error(error);
-
-        }
-
-    });
-
-  }
-
-  eliminarPelicula(movie: Movie) {
-
-    if (!confirm(`¿Eliminar "${movie.title}"?`))
-      return;
-
-    this.DBconexion.deleteMovie(movie._id!).subscribe({
-
-        next: (respuesta) => {
-
-            console.log("Película eliminada exitosamente!!", respuesta);
-            alert("Película Eliminada Existosamente");
-        },
-
-        error: (error) => {
-
-            console.error(error);
-
-        }
-
-    });
-
-  }
-
 }

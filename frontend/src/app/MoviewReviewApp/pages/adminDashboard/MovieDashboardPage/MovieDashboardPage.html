@@ -1,6 +1,3 @@
-<!--<p>MovieDashboardPage works!</p>, AUXILIO NO SE QUE ANDO HACIENDO-->
-
-
 <!-- Contenedor principal -->
 <div class="flex-1 p-8 overflow-auto">
 
@@ -18,9 +15,7 @@
 
     <button (click)="abrirModal()"
       class="bg-indigo-600 hover:bg-indigo-700 transition text-white font-medium px-5 py-3 rounded-xl shadow">
-
       + Agregar Película
-
     </button>
 
   </div>
@@ -30,7 +25,7 @@
 
     <div class="overflow-x-auto">
 
-      <table class="min-w-[1400px] w-full">
+      <table class="min-w-350 w-full">
 
         <!-- Header -->
         <thead class="bg-slate-100 border-b border-slate-200">
@@ -38,23 +33,14 @@
           <tr class="text-left text-sm text-slate-600 uppercase tracking-wider">
 
             <th class="px-6 py-4">ID</th>
-
             <th class="px-6 py-4">Título</th>
-
             <th class="px-6 py-4">Descripción</th>
-
             <th class="px-6 py-4">Poster</th>
-
             <th class="px-6 py-4">Backdrop</th>
-
             <th class="px-6 py-4">Fecha estreno</th>
-
             <th class="px-6 py-4">Calificación</th>
-
             <th class="px-6 py-4">Géneros</th>
-
             <th class="px-6 py-4">Idiomas</th>
-
             <th class="px-6 py-4 text-center">Acciones</th>
 
           </tr>
@@ -64,7 +50,6 @@
         <!-- Body -->
         <tbody class="divide-y divide-slate-200">
 
-          <!-- Ejemplo -->
           @for(movie of moviesCollection(); track movie._id){
           <tr class="hover:bg-slate-50 transition">
 
@@ -73,33 +58,25 @@
             </td>
 
             <td class="px-6 py-4">
-
               <div class="font-semibold text-slate-800">
                 {{movie.title}}
               </div>
-
             </td>
 
             <td class="px-6 py-4 text-sm text-slate-500 max-w-xs">
-
               <p class="line-clamp-2">
                 {{movie.overview}}
               </p>
-
             </td>
 
             <!-- Poster -->
             <td class="px-6 py-4">
-
-              <img [src]=movie.poster class="w-16 h-24 rounded-lg object-cover shadow">
-
+              <img [src]="movie.poster" class="w-16 h-24 rounded-lg object-cover shadow">
             </td>
 
             <!-- Backdrop -->
             <td class="px-6 py-4">
-
-              <img [src]=movie.backdrop class="w-28 h-16 rounded-lg object-cover shadow">
-
+              <img [src]="movie.backdrop" class="w-28 h-16 rounded-lg object-cover shadow">
             </td>
 
             <td class="px-6 py-4 text-sm text-slate-600">
@@ -107,65 +84,46 @@
             </td>
 
             <td class="px-6 py-4">
-
               <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-semibold">
-
                 ⭐ {{movie.rating}}
-
               </span>
-
             </td>
 
             <td class="px-6 py-4">
-
               <div class="flex flex-wrap gap-2">
-
                 <span class="text-sm text-slate-600 px-3 py-1">
-                  {{movie.genres[0]}}
+                  {{movie.genres}}
                 </span>
-
               </div>
-
             </td>
 
             <td class="px-6 py-4">
-
               <div class="flex flex-wrap gap-2">
-
                 <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full">
                   {{movie.language}}
                 </span>
-
               </div>
-
             </td>
 
-            <!-- Botones -->
+            <!-- Botones con iconos -->
             <td class="px-6 py-4">
-
               <div class="flex justify-center gap-3">
 
                 <button (click)="editarPelicula(movie)"
-                  class="px-3 py-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 transition">
-
-                  Editar
-
+                  class="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 transition">
+                  <i class="fas fa-edit"></i>
                 </button>
 
                 <button (click)="eliminarPelicula(movie)"
-                 class="px-3 py-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 transition">
-
-                  Eliminar
-
+                  class="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 transition">
+                  <i class="fas fa-trash-alt"></i>
                 </button>
 
               </div>
-
             </td>
 
           </tr>
           }
-
 
         </tbody>
 
@@ -178,251 +136,10 @@
 </div>
 
 <!-- ========================= -->
-<!-- Modal Agregar Película -->
+<!-- Modal usando MovieForm -->
 <!-- ========================= -->
+  <movie-form
+  [genresCatalog]="genresCatalog()"
+  (save)="onMovieSaved($event)">
+</movie-form>
 
-<div *ngIf="mostrarModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-5">
-
-  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
-
-    <!-- Header -->
-    <div class="flex items-center justify-between border-b px-8 py-6">
-
-      <div>
-
-        <h2 class="text-2xl font-bold text-slate-800">
-          @if(modoEdicion()){
-              Actualizar película
-            }@else{
-              Agregar película
-            }
-        </h2>
-
-        <p class="text-slate-500 mt-1">
-          Completa la información de la nueva película.
-        </p>
-
-      </div>
-
-      <button (click)="cerrarModal()" class="text-slate-500 hover:text-red-500 transition">
-
-        ✕
-
-      </button>
-
-    </div>
-
-    <!-- Body -->
-    <div class="p-8">
-
-      <!--BUSCADOR -->
-      <label class="block mb-2 font-medium text-slate-700"> Ingresa una película disponible en TMDB </label>
-
-      <input [formControl]="buscarControl" class="w-full border rounded-xl px-4 py-3" type="text"
-        placeholder="Buscar película...">
-
-      <button> Buscar </button>
-
-      <!--respuestas de busdqueda-->
-
-      @if(resultadosBusqueda().length > 0){
-      <div class="border rounded-xl overflow-hidden mb-8">
-        @for (pelicula of resultadosBusqueda(); track pelicula) {
-        <div (click)="seleccionarPelicula(pelicula)"
-          class="flex gap-4 items-center p-3 hover:bg-slate-100 cursor-pointer transition">
-
-          @if (pelicula.poster) {
-
-          <img [src]="'https://image.tmdb.org/t/p/w92' + pelicula.poster">
-
-          } @else {
-
-          <div class="w-14 h-20 bg-slate-200 rounded flex items-center justify-center">
-            Sin imagen
-          </div>
-
-          }
-
-          <div>
-
-            <h3 class="font-semibold">
-
-              {{pelicula.title}}
-
-            </h3>
-
-            <p class="text-sm text-gray-500">
-
-              {{pelicula.release_date}}
-
-            </p>
-
-          </div>
-
-        </div>
-
-        }
-      </div>
-      }
-
-      <form (ngSubmit)="validarPelicula()" [formGroup]="formulario" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <!-- Título -->
-        <div class="md:col-span-2">
-
-          <label class="block mb-2 font-medium text-slate-700">
-            Título
-          </label>
-
-          <input formControlName="title" type="text"
-            class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-        </div>
-
-        <!-- Fecha -->
-        <div>
-
-          <label class="block mb-2 font-medium text-slate-700">
-            Fecha de estreno
-          </label>
-
-          <input formControlName="release_date" type="date"
-            class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-        </div>
-
-        <!-- Rating -->
-        <div>
-
-          <label class="block mb-2 font-medium text-slate-700">
-            Calificación
-          </label>
-
-          <!--<input
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="10"
-                        class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">-->
-
-          <select formControlName="rating"
-            class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-            <option [ngValue]="null" disabled selected hidden>
-              Selecciona una calificación
-            </option>
-
-            <option [ngValue]="1">⭐ 1</option>
-            <option [ngValue]="2">⭐⭐ 2</option>
-            <option [ngValue]="3">⭐⭐⭐ 3</option>
-            <option [ngValue]="4">⭐⭐⭐⭐ 4</option>
-            <option [ngValue]="5">⭐⭐⭐⭐⭐ 5</option>
-
-          </select>
-
-        </div>
-
-        <!-- Géneros -->
-        <div>
-
-          <label class="block mb-2 font-medium text-slate-700">
-            Géneros
-          </label>
-
-          <input formControlName="genres" type="text" placeholder="Acción, Drama..."
-            class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-        </div>
-
-        <!-- Idiomas -->
-        <div>
-
-          <label class="block mb-2 font-medium text-slate-700">
-            Idiomas
-          </label>
-
-          <input formControlName="languages" type="text" placeholder="Español, Inglés..."
-            class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-        </div>
-
-        <!-- Poster -->
-        <div>
-
-          <label class="block mb-2 font-medium text-slate-700">
-            URL Poster
-          </label>
-
-          <!--<input type="text" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">-->
-
-
-          <!--<input type="file" accept="image/*" (change)="onPosterSelected($event)">-->
-          <input type="file" accept="image/*" (change)="onPosterSelected($event)"
-            class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-          @if (posterPreview()) {
-
-          <img [src]="posterPreview()" alt="Poster" class="w-40 rounded-xl shadow">
-
-          }
-
-        </div>
-
-        <!-- Backdrop -->
-        <div>
-
-          <label class="block mb-2 font-medium text-slate-700">
-            URL Backdrop
-          </label>
-
-          <input type="file" accept="image/*" (change)="onBackdropSelected($event)" name="" id=""
-            class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-
-          @if (backdropPreview()) {
-
-          <img [src]="backdropPreview()" alt="Backdrop" class="w-full rounded-xl shadow">
-
-          }
-
-
-          <!--<input type="text" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none">-->
-
-
-        </div>
-
-        <!-- Overview -->
-        <div class="md:col-span-2">
-
-          <label class="block mb-2 font-medium text-slate-700">
-            Sinopsis
-          </label>
-
-          <textarea rows="5" formControlName="overview"
-            class="w-full border rounded-xl px-4 py-3 resize-none focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
-
-        </div>
-
-        <!-- Footer formulario -->
-
-        <div>
-
-          <button type="submit"
-            class="px-6 py-3 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition shadow">
-
-            @if(modoEdicion()){
-              Actualizar película
-            }@else{
-              Agregar película
-            }
-
-          </button>
-
-        </div>
-
-      </form>
-
-    </div>
-
-  </div>
-
-</div>
