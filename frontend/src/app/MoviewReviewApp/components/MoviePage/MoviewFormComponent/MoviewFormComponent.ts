@@ -271,54 +271,71 @@ export class MovieForm {
   // Forzar actualización de validaciones
   this.formulario.updateValueAndValidity();
 }
+//==========================
+// Poster (versión simplificada)
+//==========================
 
-  //==========================
-  // Poster
-  //==========================
+onPosterSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.length) return;
 
-  onPosterSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
+  const file = input.files[0];
 
-    if (!input.files?.length) return;
+  // Redimensionar y comprimir
+  this.resizeImage(file, 600, 0.7).then((base64) => {
+    this.posterPreview.set(base64);
+    this.formulario.patchValue({ poster: base64 });
+  });
+}
 
+//==========================
+// Backdrop (versión simplificada)
+//==========================
+
+onBackdropSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.length) return;
+
+  const file = input.files[0];
+
+  // Redimensionar y comprimir
+  this.resizeImage(file, 1000, 0.6).then((base64) => {
+    this.backdropPreview.set(base64);
+    this.formulario.patchValue({ backdrop: base64 });
+  });
+}
+
+//==========================
+// Utilidad simplificada
+//==========================
+
+private resizeImage(file: File, maxWidth: number, quality: number): Promise<string> {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
+    reader.readAsDataURL(file);
 
-    reader.onload = () => {
-      const base64 = reader.result as string;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target?.result as string;
 
-      this.posterPreview.set(base64);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ratio = Math.min(maxWidth / img.width, 1);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
 
-      this.formulario.patchValue({
-        poster: base64,
-      });
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+
+      img.onerror = reject;
     };
 
-    reader.readAsDataURL(input.files[0]);
-  }
-
-  //==========================
-  // Backdrop
-  //==========================
-
-  onBackdropSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-
-    if (!input.files?.length) return;
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const base64 = reader.result as string;
-
-      this.backdropPreview.set(base64);
-
-      this.formulario.patchValue({
-        backdrop: base64,
-      });
-    };
-
-    reader.readAsDataURL(input.files[0]);
-  }
+    reader.onerror = reject;
+  });
+}
 
   //==========================
   // Guardar
