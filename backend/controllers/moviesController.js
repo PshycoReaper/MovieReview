@@ -1,4 +1,6 @@
+const mongoose = require("mongoose");
 const movie = require("../models/Movie")
+const review = require("../models/Review")
 
 const postMovie = async (req, res) => {
     try {
@@ -20,11 +22,49 @@ const postMovie = async (req, res) => {
 const getMovies= async (req, res) => {
     try {
         const movies = await movie.find().sort({ createdAt: -1 });
-        //console.log(movies)
-        res.status(200).json(movies);
+
+        // Contar cuántas reseñas tiene cada película y agregarlo como campo "reviewsCount"
+        const reviewCounts = await review.aggregate([
+            { $group: { _id: "$idMovie", count: { $sum: 1 } } }
+        ]);
+
+        const countsMap = reviewCounts.reduce((acc, item) => {
+            acc[item._id.toString()] = item.count;
+            return acc;
+        }, {});
+
+        const moviesWithCounts = movies.map((m) => ({
+            ...m.toObject(),
+            reviewsCount: countsMap[m._id.toString()] || 0
+        }));
+
+        res.status(200).json(moviesWithCounts);
     } catch (error) {
-        console.error("Error al obtener las reseñas:", error);
-        res.status(500).json({ message: "Error al obtener las reseñas" });
+        console.error("Error al obtener las películas:", error);
+        res.status(500).json({ message: "Error al obtener las películas" });
+    }
+};
+
+const getMovieById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "ID de película inválido" });
+        }
+
+        const foundMovie = await movie.findById(id);
+
+        if (!foundMovie) {
+            return res.status(404).json({ message: "Película no encontrada" });
+        }
+
+        const reviewsCount = await review.countDocuments({ idMovie: id });
+
+        res.status(200).json({ ...foundMovie.toObject(), reviewsCount });
+    } catch (error) {
+        console.error("Error al obtener la película:", error);
+        res.status(500).json({ message: "Error al obtener la película" });
     }
 };
 
@@ -98,6 +138,7 @@ const deleteMovie = async (req, res) => {
 module.exports = {
     postMovie,
     getMovies,
+    getMovieById,
     updateMovie,
     deleteMovie
 }

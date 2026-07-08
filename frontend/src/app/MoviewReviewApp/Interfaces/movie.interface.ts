@@ -1,6 +1,6 @@
 export interface Movie {
 
-  _id?: number;
+  _id?: string;
 
   title: string;
 
@@ -17,5 +17,8 @@ export interface Movie {
   genres: number[];
 
   language: string;
+
+  // Cantidad de reseñas asociadas a esta película (viene calculado desde el backend)
+  reviewsCount?: number;
 
 }

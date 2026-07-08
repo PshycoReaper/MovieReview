@@ -41,6 +41,7 @@
             <th class="px-6 py-4">Calificación</th>
             <th class="px-6 py-4">Géneros</th>
             <th class="px-6 py-4">Idiomas</th>
+            <th class="px-6 py-4 text-center">Reseñas</th>
             <th class="px-6 py-4 text-center">Acciones</th>
 
           </tr>
@@ -105,9 +106,24 @@
               </div>
             </td>
 
+            <!-- Reseñas -->
+            <td class="px-6 py-4 text-center">
+              <button (click)="verResenas(movie)"
+                class="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold transition"
+                title="Administrar reseñas de esta película">
+                💬 {{movie.reviewsCount || 0}}
+              </button>
+            </td>
+
             <!-- Botones con iconos -->
             <td class="px-6 py-4">
               <div class="flex justify-center gap-3">
+
+                <a [routerLink]="['/movie', movie._id]" target="_blank"
+                  class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                  title="Ver página pública de la película">
+                  <i class="fas fa-eye"></i>
+                </a>
 
                 <button (click)="editarPelicula(movie)"
                   class="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 transition">

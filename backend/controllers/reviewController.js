@@ -1,14 +1,26 @@
+const mongoose = require("mongoose");
 const review = require("../models/Review");
+const movie = require("../models/Movie");
 
 const postReview = async (req, res) => {
     try {
         console.log("\n========== POST REVIEW ==========");
         console.log("Body recibido:", req.body);
+
+        const { idMovie } = req.body;
+
+        if (!idMovie || !mongoose.Types.ObjectId.isValid(idMovie)) {
+            return res.status(400).json({ message: "idMovie es requerido y debe ser un ID de película válido" });
+        }
+
+        // Verificar que la película exista antes de guardar la reseña
+        const movieExists = await movie.findById(idMovie);
+        if (!movieExists) {
+            return res.status(404).json({ message: "La película indicada no existe" });
+        }
+
         const newReview = new review(req.body);
         console.log("Lo que se va a guardar en la base de datos:", newReview);
-
-        // Generar un ID aleatorio TEMPORAL para la pelicula
-        newReview.idMovie = Math.floor(Math.random() * 1000000);
 
         const savedReview = await newReview.save();
         res.status(201).json(savedReview);
@@ -20,11 +32,41 @@ const postReview = async (req, res) => {
 
 const getReviews = async (req, res) => {
     try {
-        const reviews = await review.find().sort({ createdAt: -1 });
+        // Permite filtrar por película con ?idMovie=<id>
+        const { idMovie } = req.query;
+        const filter = {};
+
+        if (idMovie) {
+            if (!mongoose.Types.ObjectId.isValid(idMovie)) {
+                return res.status(400).json({ message: "idMovie inválido" });
+            }
+            filter.idMovie = idMovie;
+        }
+
+        const reviews = await review.find(filter).sort({ createdAt: -1 });
         res.status(200).json(reviews);
     } catch (error) {
         console.error("Error al obtener las reseñas:", error);
         res.status(500).json({ message: "Error al obtener las reseñas" });
+    }
+};
+
+const getReviewsByMovie = async (req, res) => {
+    try {
+        const { movieId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(movieId)) {
+            return res.status(400).json({ message: "ID de película inválido" });
+        }
+
+        const reviews = await review
+            .find({ idMovie: movieId })
+            .sort({ createdAt: -1 });
+
+        res.status(200).json(reviews);
+    } catch (error) {
+        console.error("Error al obtener las reseñas de la película:", error);
+        res.status(500).json({ message: "Error al obtener las reseñas de la película" });
     }
 };
 
@@ -138,6 +180,7 @@ const getReviewById = async (req, res) => {
 module.exports = { 
     postReview, 
     getReviews, 
+    getReviewsByMovie,
     deleteReview, 
     updateReview,
     getReviewById  // Exportar la nueva función

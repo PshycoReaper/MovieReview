@@ -1,4 +1,5 @@
 import { Component, inject, signal, viewChild } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
 import { Movie } from '../../../Interfaces/movie.interface';
 import { DBconexion } from '../../../services/DataBase/dbconexion';
 import { TmdbService } from '../../../services/movieApi/tmdbService';
@@ -7,12 +8,13 @@ import { MovieForm } from '../../../components/MoviePage/MoviewFormComponent/Mov
 
 @Component({
   selector: 'movie-dashboard-page',
-  imports: [MovieForm],
+  imports: [MovieForm, RouterLink],
   templateUrl: './MovieDashboardPage.html',
 })
 export class MovieDashboardPage {
   // Injeccion del servicio DB
   private DBconexion = inject(DBconexion);
+  private router = inject(Router);
 
   // INJECCION DEL SERVICIO TMDB
   private tmdbService = inject(TmdbService);
@@ -117,6 +119,12 @@ export class MovieDashboardPage {
         alert('Error al eliminar la película. Por favor, intenta de nuevo.');
       },
     });
+  }
+
+  // NAVEGAR A LAS RESEÑAS DE ESTA PELÍCULA ESPECÍFICA (dashboard admin)
+  verResenas(movie: Movie): void {
+    if (!movie._id) return;
+    this.router.navigate(['/admin/reviews'], { queryParams: { movieId: movie._id } });
   }
 
   // OBTENER TODAS LAS PELÍCULAS

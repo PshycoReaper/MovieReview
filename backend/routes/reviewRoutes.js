@@ -4,6 +4,7 @@ const router = express.Router();
 const { 
     postReview, 
     getReviews, 
+    getReviewsByMovie,
     deleteReview, 
     updateReview,
     getReviewById 
@@ -11,7 +12,8 @@ const {
 
 // Rutas para reseñas
 router.post("/postReview", postReview);
-router.get("/getReviews", getReviews);
+router.get("/getReviews", getReviews); // admite ?idMovie=<id> para filtrar
+router.get("/getReviewsByMovie/:movieId", getReviewsByMovie); // reseñas de una película específica
 router.get("/getReview/:id", getReviewById);  // Nueva ruta para obtener una reseña específica
 router.delete("/deleteReview/:id", deleteReview);
 router.put("/updateReview/:id", updateReview);  // Usamos PUT para actualización completa

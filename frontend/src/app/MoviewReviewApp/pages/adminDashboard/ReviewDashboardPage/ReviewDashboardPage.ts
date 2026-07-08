@@ -1,8 +1,10 @@
 import { Component, inject, signal, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TableComponent } from '../../../components/Dashboard/Table.component/Table.component';
 import { TableColumn } from '../../../Interfaces/tableColumns.interface';
 import { DBconexion } from '../../../services/DataBase/dbconexion';
 import { Review } from '../../../Interfaces/review.interface';
+import { Movie } from '../../../Interfaces/movie.interface';
 import { FormReview } from '../../../shared/FormReview/FormReview';
 import { Subscription } from 'rxjs';
 
@@ -19,6 +21,10 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
+  // Si viene un ?movieId=<id> en la URL, se filtran las reseñas de esa película
+  filteredMovieId = signal<string | null>(null);
+  filteredMovie = signal<Movie | null>(null);
+
   private reviewsArray = signal<Review[]>([]);
   private subscriptions = new Subscription();
   private editingReview = signal<Review | null>(null);
@@ -33,6 +39,8 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   // Servicios
   //==================
   private dbconexion = inject(DBconexion);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   //==================
   // Configuración
@@ -65,7 +73,30 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
-    this.loadReviews();
+    const subscription = this.route.queryParamMap.subscribe((params) => {
+      const movieId = params.get('movieId');
+      this.filteredMovieId.set(movieId);
+
+      if (movieId) {
+        this.dbconexion.getMovieById(movieId).subscribe({
+          next: (movie) => this.filteredMovie.set(movie),
+          error: () => this.filteredMovie.set(null),
+        });
+      } else {
+        this.filteredMovie.set(null);
+      }
+
+      this.loadReviews();
+    });
+
+    this.subscriptions.add(subscription);
+  }
+
+  //==================
+  // Filtro por película
+  //==================
+  clearMovieFilter(): void {
+    this.router.navigate(['/admin/reviews']);
   }
 
   ngOnDestroy(): void {
@@ -152,7 +183,12 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const subscription = this.dbconexion.getReviews().subscribe({
+    const movieId = this.filteredMovieId();
+    const request = movieId
+      ? this.dbconexion.getReviewsByMovie(movieId)
+      : this.dbconexion.getReviews();
+
+    const subscription = request.subscribe({
       next: (reviews) => {
         this.reviewsArray.set(reviews);
         this.isLoading.set(false);

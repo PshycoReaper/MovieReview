@@ -15,11 +15,21 @@ export const routes: Routes = [
   },*/
 
   // ==========================
-  // Publicar reseña
+  // Publicar reseña (genérica, legado)
   // ==========================
   {
     path: 'review',
     component: ReviewComponent
+  },
+
+  // ==========================
+  // Detalle de película + reseñas de esa película
+  // ==========================
+  {
+    path: 'movie/:id',
+    loadComponent: () =>
+      import('./MoviewReviewApp/pages/MovieDetailPage/MovieDetailPage')
+        .then(m => m.MovieDetailPage),
   },
 
   // ==========================

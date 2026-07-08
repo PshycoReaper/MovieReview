@@ -19,15 +19,19 @@ export class DBconexion {
   getReviews(): Observable<Review[]> {
     return this.http.get<Review[]>(this.apiUrl + 'api/reviews/getReviews');
   }
-  updateReview(id: number, data: Partial<Review>): Observable<any> {
+  // Reseñas de una película específica
+  getReviewsByMovie(movieId: string): Observable<Review[]> {
+    return this.http.get<Review[]>(this.apiUrl + `api/reviews/getReviewsByMovie/${movieId}`);
+  }
+  updateReview(id: string, data: Partial<Review>): Observable<any> {
     console.log(`Actualizando reseña ${id}:`, data);
     return this.http.put(this.apiUrl + `api/reviews/updateReview/${id}`, data);
   }
-  deleteReview(id: number): Observable<any> {
+  deleteReview(id: string): Observable<any> {
     return this.http.delete(this.apiUrl + `api/reviews/deleteReview/${id}`);
   }
   // Método para obtener una reseña específica
-  getReviewById(id: number): Observable<Review> {
+  getReviewById(id: string): Observable<Review> {
     return this.http.get<Review>(this.apiUrl + `api/reviews/getReview/${id}`);
   }
 
@@ -39,10 +43,14 @@ export class DBconexion {
   getMovies(): Observable<Movie[]> {
     return this.http.get<Movie[]>(this.apiUrl + 'api/movies/getMovies');
   }
-  updateMovie(id: number, data: Movie): Observable<any> {
+  // Obtener una película específica (para la página de detalle)
+  getMovieById(id: string): Observable<Movie> {
+    return this.http.get<Movie>(this.apiUrl + `api/movies/getMovie/${id}`);
+  }
+  updateMovie(id: string, data: Movie): Observable<any> {
     return this.http.put(this.apiUrl + `api/movies/updateMovie/${id}`, data);
   }
-  deleteMovie(id: number): Observable<any> {
+  deleteMovie(id: string): Observable<any> {
     return this.http.delete(this.apiUrl + `api/movies/deleteMovie/${id}`)
   }
 }

@@ -30,8 +30,8 @@ export class FormReview implements OnInit, OnChanges {
   userName = '';
   grade: number | null = null;
   review = '';
-  idMovie: number | null = null;
-  _id: number | null = null;
+  idMovie: string | null = null;
+  _id: string | null = null;
 
   //==========================
   // Ciclo de vida
