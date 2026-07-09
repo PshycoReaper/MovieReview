@@ -1,0 +1,51 @@
+<nav class="sticky top-0 z-50 h-16 bg-[#212544] shadow-lg">
+
+  <div class="mx-auto flex h-full max-w-7xl items-center justify-between px-8">
+
+    <!-- Logo -->
+
+    <a
+      routerLink="/"
+      class="flex items-center gap-2 text-3xl font-bold">
+
+      <span class="text-[#ebe8e0]">
+        Film
+      </span>
+
+      <span class="text-[#e2ae69]">
+        Talk
+      </span>
+
+    </a>
+
+    <!-- Navegación -->
+
+    <div class="flex items-center gap-8">
+
+      @for(item of menu(); track item.route){
+
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="text-cyan-400"
+        class="font-medium text-white transition hover:text-[#e2ae69]">
+
+        {{item.title}}
+
+      </a>
+
+      }
+
+    </div>
+
+    <!-- Buscar -->
+
+    <button
+      class="rounded-full p-2 text-cyan-400 transition hover:bg-slate-800">
+
+      <i class="fa-solid fa-magnifying-glass text-xl"></i>
+
+    </button>
+
+  </div>
+
+</nav>

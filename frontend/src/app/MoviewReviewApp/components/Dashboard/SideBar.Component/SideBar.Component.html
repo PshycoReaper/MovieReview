@@ -27,8 +27,8 @@
 
     @for(item of adminMenu(); track item.route){
 
-    <a href="{{ item.route }}" class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition"
-      [class.bg-cyan-500]="item.active" [class.font-medium]="item.active" [class.hover:bg-slate-800]="!item.active">
+    <a [routerLink]="item.route" routerLinkActive="bg-cyan-500 font-medium" [routerLinkActiveOptions]="{ exact: true }"
+      class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800">
 
       <i></i>
 
@@ -37,7 +37,6 @@
     </a>
 
     }
-
     <!-- Separador -->
 
     <div class="my-6 border-t border-slate-700"></div>
@@ -52,7 +51,8 @@
 
     @for(item of navigationMenu(); track item.route){
 
-    <a href="#" class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800">
+    <a [routerLink]="item.route" routerLinkActive="bg-cyan-500 font-medium" [routerLinkActiveOptions]="{ exact: true }"
+      class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800">
 
       <i></i>
 
@@ -66,27 +66,12 @@
 
     <div class="my-6 border-t border-slate-700"></div>
 
-    <!-- Cuenta -->
+    <a routerLink="/login" (click)="logout()"
+      class="w-full flex items-center gap-3 rounded-xl bg-red-600 px-4 py-3 transition hover:bg-red-700">
 
-    <p class="mb-3 px-3 text-xs uppercase text-slate-400">
-
-      Cuenta
-
-    </p>
-
-    @for(item of accountMenu(); track item.route){
-
-    <a href="{{ item.route }}"
-      class="{{ item.class || 'mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800' }}"
-      (click)="item.function && item.function()">
-
-      <i></i>
-
-      {{ item.title }}
+      Cerrar sesión
 
     </a>
-
-    }
 
   </div>
 

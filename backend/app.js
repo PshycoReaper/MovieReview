@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const moviesRoutes = require("./routes/moviesRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/movies", moviesRoutes)
+app.use("/api/contact", contactRoutes)
 
 
 // Ruta de prueba

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './MoviewReviewApp/guards/auth-guard';
 import { ReviewComponent } from './MoviewReviewApp/components/MoviePage/Review.Component/Review.Component';
+import { MovieDashboardPage } from './MoviewReviewApp/pages/adminDashboard/MovieDashboardPage/MovieDashboardPage';
 
 export const routes: Routes = [
 
@@ -30,6 +31,16 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./MoviewReviewApp/pages/MovieDetailPage/MovieDetailPage')
         .then(m => m.MovieDetailPage),
+  },
+
+  // ==========================
+  // Contacto: pedir cambios de reseña o solicitar películas
+  // ==========================
+  {
+    path: 'contact',
+    loadComponent: () =>
+      import('./MoviewReviewApp/pages/ContactPage/ContactPage')
+        .then(m => m.ContactPage),
   },
 
   // ==========================
@@ -80,6 +91,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./MoviewReviewApp/pages/adminDashboard/ReviewDashboardPage/ReviewDashboardPage')
             .then(m => m.ReviewDashboardPage),
+      },
+
+      {
+        path: 'petitions',
+        loadComponent: () =>
+          import('./MoviewReviewApp/pages/adminDashboard/PetitionDashboardPage/PetitionDashboardPage')
+            .then(m => m.PetitionDashboardPage),
       }
 
 
