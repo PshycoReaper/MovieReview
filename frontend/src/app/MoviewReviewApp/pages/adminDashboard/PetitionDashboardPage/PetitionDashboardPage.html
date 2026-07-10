@@ -12,7 +12,7 @@
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded flex justify-between">
       <span>{{ errorMessage() }}</span>
       <button (click)="errorMessage.set(null)" class="text-red-700 hover:text-red-900">
-        ✕
+        <i class="bi bi-x-circle-fill"></i>
       </button>
     </div>
   }

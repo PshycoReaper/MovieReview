@@ -15,27 +15,18 @@ const postMovie = async (req, res) => {
         res.status(201).json(savedMovie);
     } catch (error) {
         console.error("Error al guardar la reseña:", error);
-        res.status(500).json({
-            message: "Error al guardar la reseña"
-        });
+        res.status(500).json({ message: "Error al guardar la reseña" });
     }
 }
 
-const getMovies = async (req, res) => {
+const getMovies= async (req, res) => {
     try {
-        const movies = await movie.find().sort({
-            createdAt: -1
-        });
+        const movies = await movie.find().sort({ createdAt: -1 });
 
         // Contar cuántas reseñas tiene cada película y agregarlo como campo "reviewsCount"
-        const reviewCounts = await review.aggregate([{
-            $group: {
-                _id: "$idMovie",
-                count: {
-                    $sum: 1
-                }
-            }
-        }]);
+        const reviewCounts = await review.aggregate([
+            { $group: { _id: "$idMovie", count: { $sum: 1 } } }
+        ]);
 
         const countsMap = reviewCounts.reduce((acc, item) => {
             acc[item._id.toString()] = item.count;
@@ -50,76 +41,32 @@ const getMovies = async (req, res) => {
         res.status(200).json(moviesWithCounts);
     } catch (error) {
         console.error("Error al obtener las películas:", error);
-        res.status(500).json({
-            message: "Error al obtener las películas"
-        });
+        res.status(500).json({ message: "Error al obtener las películas" });
     }
 };
 
 const getMovieById = async (req, res) => {
     try {
-        const {
-            id
-        } = req.params;
+        const { id } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({
-                message: "ID de película inválido"
-            });
+            return res.status(400).json({ message: "ID de película inválido" });
         }
 
         const foundMovie = await movie.findById(id);
 
         if (!foundMovie) {
-            return res.status(404).json({
-                message: "Película no encontrada"
-            });
+            return res.status(404).json({ message: "Película no encontrada" });
         }
 
-        const reviewsCount = await review.countDocuments({
-            idMovie: id
-        });
+        const reviewsCount = await review.countDocuments({ idMovie: id });
 
-        res.status(200).json({
-            ...foundMovie.toObject(),
-            reviewsCount
-        });
+        res.status(200).json({ ...foundMovie.toObject(), reviewsCount });
     } catch (error) {
         console.error("Error al obtener la película:", error);
-        res.status(500).json({
-            message: "Error al obtener la película"
-        });
+        res.status(500).json({ message: "Error al obtener la película" });
     }
 };
-
-const getMovieByName = async (req, res) => {
-    try {
-        const {
-            name
-        } = req.params;
-        const moviesFound = await movie.find({
-
-            title: {
-
-                $regex: name,
-
-                $options: "i"
-
-            }
-
-        });
-
-        res.status(200).json(moviesFound);
-
-
-    } catch {
-        console.error("Error al obtener la película:", error);
-
-        res.status(500).json({
-            message: "Error al obtener la película"
-        });
-    }
-}
 
 
 const updateMovie = async (req, res) => {
@@ -192,7 +139,6 @@ module.exports = {
     postMovie,
     getMovies,
     getMovieById,
-    getMovieByName,
     updateMovie,
     deleteMovie
 }

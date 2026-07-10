@@ -4,10 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Movie } from '../../Interfaces/movie.interface';
 import { DBconexion } from '../../services/DataBase/dbconexion';
 import { ReviewComponent } from '../../components/MoviePage/Review.Component/Review.Component';
+import { NavbarComponent } from '../../shared/NavBarComponent/NavBarComponent';
+import { FooterComponent } from '../../shared/FooterComponent/FooterComponent';
 
 @Component({
   selector: 'app-movie-detail-page',
-  imports: [CommonModule, ReviewComponent],
+  imports: [CommonModule, ReviewComponent, NavbarComponent, FooterComponent],
   templateUrl: './MovieDetailPage.html',
 })
 export class MovieDetailPage {

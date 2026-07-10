@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { DBconexion } from '../../services/DataBase/dbconexion';
 import { ContactRequest, ContactRequestType } from '../../Interfaces/contactRequest.interface';
+import { NavbarComponent } from '../../shared/NavBarComponent/NavBarComponent';
+import { FooterComponent } from '../../shared/FooterComponent/FooterComponent';
 
 @Component({
   selector: 'app-contact-page',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, NavbarComponent, FooterComponent],
   templateUrl: './ContactPage.html',
 })
 export class ContactPage {

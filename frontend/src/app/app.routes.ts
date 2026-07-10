@@ -1,11 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './MoviewReviewApp/guards/auth-guard';
 import { ReviewComponent } from './MoviewReviewApp/components/MoviePage/Review.Component/Review.Component';
-
-import { MovieSearchPage } from './MoviewReviewApp/pages/MovieSearchPage/MovieSearchPage';
-
 import { MovieDashboardPage } from './MoviewReviewApp/pages/adminDashboard/MovieDashboardPage/MovieDashboardPage';
-
 
 export const routes: Routes = [
 
@@ -25,14 +21,6 @@ export const routes: Routes = [
   {
     path: 'review',
     component: ReviewComponent
-  },
-
-  // ==========================
-  // Explorar - TalkFilm
-  // ==========================
-  {
-    path: 'search',
-    component: MovieSearchPage
   },
 
   // ==========================
