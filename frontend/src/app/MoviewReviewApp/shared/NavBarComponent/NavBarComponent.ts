@@ -14,16 +14,12 @@ export class NavbarComponent {
       route: '/',
     },
     {
-      title: 'Películas',
+      title: 'Explorar',
       route: '/movies',
     },
     {
       title: 'Contactanos',
       route: '/contact',
-    },
-    {
-      title: 'Acerca de',
-      route: '/about',
     },
   ]);
 
