@@ -20,7 +20,7 @@
 
     <div class="relative w-full max-w-2xl">
 
-      <input type="text" placeholder="Buscar películas..." class="w-full rounded-full border border-slate-300 py-3 pl-6 pr-14
+      <input [formControl]="buscarControlSearch" type="text" placeholder="Buscar películas..." class="w-full rounded-full border border-slate-300 py-3 pl-6 pr-14
                 focus:ring-2 focus:ring-indigo-500 outline-none">
 
       <button class="absolute right-2 top-1/2 -translate-y-1/2
@@ -32,6 +32,51 @@
       </button>
 
     </div>
+
+    <!--respuestas de búsqueda-->
+      @if(resultadosPelisBusqueda().length > 0){
+      <div class="border rounded-xl overflow-hidden mb-8 max-h-60 overflow-y-auto">
+        <!-- *** CORRECCIÓN AQUÍ: Usamos $index como respaldo *** -->
+        @for (pelicula of resultadosPelisBusqueda(); track pelicula.id || pelicula._id || $index) {
+        <div 
+          class="flex gap-4 items-center p-3 hover:bg-slate-100 cursor-pointer transition border-b last:border-b-0">
+
+          <!-- Usamos poster (mapeado) o poster_path como respaldo -->
+          @if (pelicula.poster || pelicula.poster_path) {
+
+          <img
+            [src]="pelicula.poster || pelicula.poster_path"
+            class="w-14 h-20 object-cover rounded" (error)="pelicula.poster = ''">
+
+          } @else {
+
+          <div class="w-14 h-20 bg-slate-200 rounded flex items-center justify-center text-xs text-slate-500">
+            Sin imagen
+          </div>
+
+          }
+
+          <div>
+
+            <h3 class="font-semibold text-slate-800">
+
+              {{pelicula.title}}
+
+            </h3>
+
+            <p class="text-sm text-gray-500">
+
+              {{pelicula.release_date || pelicula.releaseDate || 'Fecha no disponible'}}
+
+            </p>
+
+          </div>
+
+        </div>
+
+        }
+      </div>
+      }
 
   </section>
 
@@ -114,7 +159,7 @@
 
   <!-- CARGAR MÁS -->
 
-  <div class="flex justify-center mt-12">
+  <!--<div class="flex justify-center mt-12">
 
     <button class="rounded-full border border-slate-300
             w-14 h-14 text-2xl
@@ -124,6 +169,6 @@
 
     </button>
 
-  </div>
+  </div>-->
 
 </div>
