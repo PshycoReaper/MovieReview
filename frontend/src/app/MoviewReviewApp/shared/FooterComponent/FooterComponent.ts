@@ -18,13 +18,18 @@ export class FooterComponent {
       route: '/',
     },
     {
-      title: 'Películas',
+      title: 'Explorar',
       route: '/movies',
     },
     {
-      title: 'Reseñas',
-      route: '/reviews',
+      title: 'Contacto',
+      route: '/contact',
     },
+    {
+    title: 'API (TMDB)',
+    route: 'https://www.themoviedb.org/',
+    external: true,
+  },
   ];
 
   // ================= Panel de administrador =================
@@ -60,7 +65,7 @@ export class FooterComponent {
         clearTimeout(this.resetTimer);
       }
 
-      this.router.navigate(['/admin/login']);
+      this.router.navigate(['/login']);
       return;
     }
 
