@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Review } from '../../Interfaces/review.interface';
 import { Movie } from '../../Interfaces/movie.interface';
+import { ContactRequest } from '../../Interfaces/contactRequest.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -52,5 +53,23 @@ export class DBconexion {
   }
   deleteMovie(id: string): Observable<any> {
     return this.http.delete(this.apiUrl + `api/movies/deleteMovie/${id}`)
+  }
+
+  // Métodos para peticiones de contacto (cambios de reseña / solicitud de películas)
+  postContactRequest(data: ContactRequest): Observable<any> {
+    console.log('Enviando petición de contacto al backend:', data);
+    return this.http.post(this.apiUrl + 'api/contact/postContactRequest', data);
+  }
+  getContactRequests(): Observable<ContactRequest[]> {
+    return this.http.get<ContactRequest[]>(this.apiUrl + 'api/contact/getContactRequests');
+  }
+  getContactRequestById(id: string): Observable<ContactRequest> {
+    return this.http.get<ContactRequest>(this.apiUrl + `api/contact/getContactRequest/${id}`);
+  }
+  updateContactRequest(id: string, data: Partial<ContactRequest>): Observable<any> {
+    return this.http.put(this.apiUrl + `api/contact/updateContactRequest/${id}`, data);
+  }
+  deleteContactRequest(id: string): Observable<any> {
+    return this.http.delete(this.apiUrl + `api/contact/deleteContactRequest/${id}`);
   }
 }

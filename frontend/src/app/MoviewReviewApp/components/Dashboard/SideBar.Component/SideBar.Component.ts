@@ -1,7 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
-import {AuthService} from '../../../services/auth/auth';
-
-
+import { AuthService } from '../../../services/auth/auth';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 interface MenuItem {
   title: string;
@@ -13,7 +12,7 @@ interface MenuItem {
 
 @Component({
   selector: 'side-bar',
-  imports: [],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './SideBar.Component.html',
 })
 export class SideBarComponent {
@@ -33,6 +32,10 @@ export class SideBarComponent {
       title: 'Reseñas',
       route: '/admin/reviews',
     },
+    {
+      title: 'Peticiones',
+      route: '/admin/petitions',
+    },
   ]);
 
   navigationMenu = signal<MenuItem[]>([
@@ -44,6 +47,10 @@ export class SideBarComponent {
       title: 'Explorar películas',
       route: '/movies',
     },
+    {
+      title: 'Página de contacto',
+      route: '/contact',
+    },
   ]);
 
   accountMenu = signal<MenuItem[]>([
@@ -51,7 +58,8 @@ export class SideBarComponent {
       title: 'Cerrar sesión',
       route: '',
       function: () => this.logout(),
-      class: "w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 transition"
+      class:
+        'w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 transition',
     },
   ]);
   logout() {
