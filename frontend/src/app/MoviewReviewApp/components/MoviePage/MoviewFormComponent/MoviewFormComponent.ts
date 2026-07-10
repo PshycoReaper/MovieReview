@@ -299,7 +299,7 @@ onBackdropSelected(event: Event) {
   const file = input.files[0];
 
   // Redimensionar y comprimir
-  this.resizeImage(file, 1000, 0.6).then((base64) => {
+  this.resizeImage(file, 1280, 0.5).then((base64) => {
     this.backdropPreview.set(base64);
     this.formulario.patchValue({ backdrop: base64 });
   });
@@ -327,7 +327,7 @@ private resizeImage(file: File, maxWidth: number, quality: number): Promise<stri
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        resolve(canvas.toDataURL('image/jpeg', quality));
+        resolve(canvas.toDataURL('image/webp', quality));
       };
 
       img.onerror = reject;
