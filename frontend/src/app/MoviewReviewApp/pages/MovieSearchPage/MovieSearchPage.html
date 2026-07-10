@@ -1,0 +1,129 @@
+<div class="max-w-7xl mx-auto px-6 py-8">
+
+  <!-- HERO -->
+
+  <section class="bg-slate-100 rounded-3xl px-10 py-16 flex flex-col items-center justify-center">
+
+    <h1 class="text-4xl font-bold text-center text-slate-800 mb-4">
+
+      Descubre tu próxima película
+
+    </h1>
+
+    <p class="text-slate-500 mb-8 text-center">
+
+      Explora todas las películas registradas en Film Talk
+
+    </p>
+
+    <!-- Buscador -->
+
+    <div class="relative w-full max-w-2xl">
+
+      <input type="text" placeholder="Buscar películas..." class="w-full rounded-full border border-slate-300 py-3 pl-6 pr-14
+                focus:ring-2 focus:ring-indigo-500 outline-none">
+
+      <button class="absolute right-2 top-1/2 -translate-y-1/2
+                bg-indigo-600 text-white rounded-full
+                w-10 h-10 flex items-center justify-center">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- FILTROS -->
+
+  <section class="mt-10 flex flex-wrap gap-3 justify-center">
+
+    <button class="px-5 py-2 rounded-full bg-slate-200 hover:bg-slate-300">
+
+      Acción
+
+    </button>
+
+    <button class="px-5 py-2 rounded-full bg-slate-200">
+
+      Comedia
+
+    </button>
+
+    <button class="px-5 py-2 rounded-full bg-slate-200">
+
+      Drama
+
+    </button>
+
+    <button class="px-5 py-2 rounded-full bg-slate-200">
+
+      Terror
+
+    </button>
+
+    <button class="px-5 py-2 rounded-full bg-slate-200">
+
+      Ciencia ficción
+
+    </button>
+
+  </section>
+
+  <!-- GRID -->
+
+  <section class="mt-12
+        grid
+        grid-cols-2
+        sm:grid-cols-3
+        md:grid-cols-4
+        lg:grid-cols-5
+        xl:grid-cols-6
+        gap-8">
+
+    <!-- Tarjeta -->
+
+    @for(movie of moviesDBMongoArray(); track movie._id){
+
+    <article class="bg-white rounded-2xl shadow hover:shadow-xl
+            transition cursor-pointer overflow-hidden">
+
+      <img [src]="movie.poster" [alt]="movie.title" class="w-full aspect-[2/3] object-cover">
+
+      <div class="p-4">
+
+        <h3 class="font-bold text-slate-800 line-clamp-1">
+
+         {{movie.title}}
+
+        </h3>
+
+        <p class="text-sm text-slate-500" style="padding: 5px 0px;">
+
+          {{movie.genres}}
+
+        </p>
+
+      </div>
+
+    </article>
+    }
+
+  </section>
+
+  <!-- CARGAR MÁS -->
+
+  <div class="flex justify-center mt-12">
+
+    <button class="rounded-full border border-slate-300
+            w-14 h-14 text-2xl
+            hover:bg-slate-100">
+
+      ↓
+
+    </button>
+
+  </div>
+
+</div>
