@@ -149,194 +149,216 @@ export class MovieForm {
   //==========================
 
   seleccionarPelicula(movie: any): void {
-  // Ocultar resultados de búsqueda
-  this.resultadosBusqueda.set([]);
-  this.buscarControl.setValue('');
-  this.peliculaSeleccionada.set(movie);
+    // Ocultar resultados de búsqueda
+    this.resultadosBusqueda.set([]);
+    this.buscarControl.setValue('');
+    this.peliculaSeleccionada.set(movie);
 
-  // Mapeo de idiomas
-  const idiomas: Record<string, string> = {
-    en: 'Inglés',
-    es: 'Español',
-    fr: 'Francés',
-    ja: 'Japonés',
-    ko: 'Coreano',
-    de: 'Alemán',
-    it: 'Italiano',
-    pt: 'Portugués',
-    ru: 'Ruso',
-    zh: 'Chino',
-    ar: 'Árabe',
-    hi: 'Hindi',
-    nl: 'Holandés',
-    pl: 'Polaco',
-    sv: 'Sueco',
-    da: 'Danés',
-    fi: 'Finlandés',
-    no: 'Noruego',
-    tr: 'Turco',
-    el: 'Griego',
-    he: 'Hebreo',
-    th: 'Tailandés',
-    vi: 'Vietnamita'
-  };
-
-  // GÉNEROS: manejar tanto genre_ids como genres
-  let generosTexto = '';
-  if (Array.isArray(movie.genre_ids) || Array.isArray(movie.genres)) {
-    const ids = movie.genre_ids || movie.genres;
-    generosTexto = ids
-      .map((id: number) => {
-        const genero = this.genresCatalog().find((g) => g.id === id);
-        return genero?.name;
-      })
-      .filter(Boolean)
-      .join(', ');
-  } else if (typeof movie.genres === 'string') {
-    generosTexto = movie.genres;
-  }
-
-  // POSTER: Construir URL completa si es necesario
-  // El mapper devuelve poster_path en la propiedad 'poster'
-  let posterUrl = '';
-  if (movie.poster) {
-    // Si movie.poster es un path (empieza con /), construir URL
-    if (movie.poster.startsWith('/')) {
-      posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster}`;
-    } else {
-      // Si ya es URL completa, usarla
-      posterUrl = movie.poster;
-    }
-  } else if (movie.poster_path) {
-    // Fallback a poster_path si existe
-    posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-  }
-
-  // BACKDROP: Construir URL completa si es necesario
-  let backdropUrl = '';
-  if (movie.backdrop) {
-    if (movie.backdrop.startsWith('/')) {
-      backdropUrl = `https://image.tmdb.org/t/p/w780${movie.backdrop}`;
-    } else {
-      backdropUrl = movie.backdrop;
-    }
-  } else if (movie.backdrop_path) {
-    backdropUrl = `https://image.tmdb.org/t/p/w780${movie.backdrop_path}`;
-  }
-
-  // Actualizar previsualizaciones (usar las URLs completas)
-  this.posterPreview.set(posterUrl);
-  this.backdropPreview.set(backdropUrl);
-
-  // IDIOMA: mapear el código de idioma a nombre
-  let idioma = '';
-  const languageCode = movie.original_language || movie.language;
-  if (languageCode) {
-    idioma = idiomas[languageCode] || languageCode;
-  }
-
-  // RATING: convertir de 0-10 a 0-5
-  let rating = '';
-  const ratingValue = movie.vote_average || movie.rating;
-  if (ratingValue) {
-    rating = Math.round(ratingValue / 2).toString();
-  }
-
-  // FECHA: obtener release_date
-  const fecha = movie.release_date || movie.releaseDate || '';
-
-  console.log('Datos a patch:', {
-    title: movie.title,
-    overview: movie.overview,
-    release_date: fecha,
-    rating: rating,
-    genres: generosTexto,
-    languages: idioma,
-    poster: posterUrl,
-    backdrop: backdropUrl
-  });
-
-  // PATCHEAR el formulario
-  this.formulario.patchValue({
-    title: movie.title || '',
-    overview: movie.overview || '',
-    release_date: fecha, // <-- IMPORTANTE: usar el campo correcto
-    rating: rating,
-    genres: generosTexto,
-    languages: idioma, // <-- IMPORTANTE: nombre mapeado
-    poster: posterUrl,
-    backdrop: backdropUrl,
-  });
-
-  // Forzar actualización de validaciones
-  this.formulario.updateValueAndValidity();
-}
-//==========================
-// Poster (versión simplificada)
-//==========================
-
-onPosterSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (!input.files?.length) return;
-
-  const file = input.files[0];
-
-  // Redimensionar y comprimir
-  this.resizeImage(file, 600, 0.7).then((base64) => {
-    this.posterPreview.set(base64);
-    this.formulario.patchValue({ poster: base64 });
-  });
-}
-
-//==========================
-// Backdrop (versión simplificada)
-//==========================
-
-onBackdropSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (!input.files?.length) return;
-
-  const file = input.files[0];
-
-  // Redimensionar y comprimir
-  this.resizeImage(file, 1280, 0.5).then((base64) => {
-    this.backdropPreview.set(base64);
-    this.formulario.patchValue({ backdrop: base64 });
-  });
-}
-
-//==========================
-// Utilidad simplificada
-//==========================
-
-private resizeImage(file: File, maxWidth: number, quality: number): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-
-    reader.onload = (e) => {
-      const img = new Image();
-      img.src = e.target?.result as string;
-
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ratio = Math.min(maxWidth / img.width, 1);
-        canvas.width = img.width * ratio;
-        canvas.height = img.height * ratio;
-
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        resolve(canvas.toDataURL('image/webp', quality));
-      };
-
-      img.onerror = reject;
+    // Mapeo de idiomas
+    const idiomas: Record<string, string> = {
+      en: 'Inglés',
+      es: 'Español',
+      fr: 'Francés',
+      ja: 'Japonés',
+      ko: 'Coreano',
+      de: 'Alemán',
+      it: 'Italiano',
+      pt: 'Portugués',
+      ru: 'Ruso',
+      zh: 'Chino',
+      ar: 'Árabe',
+      hi: 'Hindi',
+      nl: 'Holandés',
+      pl: 'Polaco',
+      sv: 'Sueco',
+      da: 'Danés',
+      fi: 'Finlandés',
+      no: 'Noruego',
+      tr: 'Turco',
+      el: 'Griego',
+      he: 'Hebreo',
+      th: 'Tailandés',
+      vi: 'Vietnamita',
     };
 
-    reader.onerror = reject;
-  });
-}
+    // GÉNEROS: manejar tanto genre_ids como genres
+    let generosTexto = '';
+    if (Array.isArray(movie.genre_ids) || Array.isArray(movie.genres)) {
+      const ids = movie.genre_ids || movie.genres;
+      generosTexto = ids
+        .map((id: number) => {
+          const genero = this.genresCatalog().find((g) => g.id === id);
+          return genero?.name;
+        })
+        .filter(Boolean)
+        .join(', ');
+    } else if (typeof movie.genres === 'string') {
+      generosTexto = movie.genres;
+    }
 
+    // POSTER: Construir URL completa si es necesario
+    // El mapper devuelve poster_path en la propiedad 'poster'
+    let posterUrl = '';
+    if (movie.poster) {
+      // Si movie.poster es un path (empieza con /), construir URL
+      if (movie.poster.startsWith('/')) {
+        posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster}`;
+      } else {
+        // Si ya es URL completa, usarla
+        posterUrl = movie.poster;
+      }
+    } else if (movie.poster_path) {
+      // Fallback a poster_path si existe
+      posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+    }
+
+    // BACKDROP: Construir URL completa si es necesario
+    let backdropUrl = '';
+    if (movie.backdrop) {
+      if (movie.backdrop.startsWith('/')) {
+        backdropUrl = `https://image.tmdb.org/t/p/w780${movie.backdrop}`;
+      } else {
+        backdropUrl = movie.backdrop;
+      }
+    } else if (movie.backdrop_path) {
+      backdropUrl = `https://image.tmdb.org/t/p/w780${movie.backdrop_path}`;
+    }
+
+    // Actualizar previsualizaciones (usar las URLs completas)
+    this.posterPreview.set(posterUrl);
+    this.backdropPreview.set(backdropUrl);
+
+    // IDIOMA: mapear el código de idioma a nombre
+    let idioma = '';
+    const languageCode = movie.original_language || movie.language;
+    if (languageCode) {
+      idioma = idiomas[languageCode] || languageCode;
+    }
+
+    // RATING: convertir de 0-10 a 0-5
+    let rating = '';
+    const ratingValue = movie.vote_average || movie.rating;
+    if (ratingValue) {
+      rating = Math.round(ratingValue / 2).toString();
+    }
+
+    // FECHA: obtener release_date
+    const fecha = movie.release_date || movie.releaseDate || '';
+
+    console.log('Datos a patch:', {
+      title: movie.title,
+      overview: movie.overview,
+      release_date: fecha,
+      rating: rating,
+      genres: generosTexto,
+      languages: idioma,
+      poster: posterUrl,
+      backdrop: backdropUrl,
+    });
+
+    // PATCHEAR el formulario
+    this.formulario.patchValue({
+      title: movie.title || '',
+      overview: movie.overview || '',
+      release_date: fecha, // <-- IMPORTANTE: usar el campo correcto
+      rating: rating,
+      genres: generosTexto,
+      languages: idioma, // <-- IMPORTANTE: nombre mapeado
+      poster: posterUrl,
+      backdrop: backdropUrl,
+    });
+
+    // Forzar actualización de validaciones
+    this.formulario.updateValueAndValidity();
+  }
+  //==========================
+  // Poster (versión simplificada)
+  //==========================
+
+  onPosterSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    this.resizeImage(input.files[0], 600, 150).then((base64) => {
+      this.posterPreview.set(base64);
+      this.formulario.patchValue({ poster: base64 });
+    });
+  }
+
+  //==========================
+  // Backdrop (versión simplificada)
+  //==========================
+
+  onBackdropSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    this.resizeImage(input.files[0], 1280, 300).then((base64) => {
+      this.backdropPreview.set(base64);
+      this.formulario.patchValue({ backdrop: base64 });
+    });
+  }
+  //==========================
+  // Utilidad simplificada
+  //==========================
+
+  private resizeImage(file: File, maxWidth: number, targetSizeKB: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target?.result as string;
+
+        img.onload = () => {
+          const ratio = Math.min(maxWidth / img.width, 1);
+
+          const canvas = document.createElement('canvas');
+
+          canvas.width = img.width * ratio;
+          canvas.height = img.height * ratio;
+
+          const ctx = canvas.getContext('2d');
+
+          if (!ctx) {
+            reject('No se pudo obtener el contexto del canvas.');
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          let quality = 0.9;
+          let base64 = '';
+
+          const targetBytes = targetSizeKB * 1024;
+
+          do {
+            base64 = canvas.toDataURL('image/webp', quality);
+
+            // Calcula aproximadamente el tamaño real del Base64
+            const sizeBytes = Math.ceil(
+              ((base64.length - 'data:image/webp;base64,'.length) * 3) / 4,
+            );
+
+            if (sizeBytes <= targetBytes) {
+              break;
+            }
+
+            quality -= 0.05;
+          } while (quality >= 0.3);
+
+          resolve(base64);
+        };
+
+        img.onerror = reject;
+      };
+
+      reader.onerror = reject;
+    });
+  }
   //==========================
   // Guardar
   //==========================
