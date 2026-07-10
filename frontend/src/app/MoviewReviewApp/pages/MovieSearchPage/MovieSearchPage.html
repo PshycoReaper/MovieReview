@@ -1,174 +1,150 @@
-<div class="max-w-7xl mx-auto px-6 py-8">
+<navbar-component />
 
-  <!-- HERO -->
+<div class="min-h-[80vh] bg-brand-cream">
 
-  <section class="bg-slate-100 rounded-3xl px-10 py-16 flex flex-col items-center justify-center">
+  <!-- ================= HERO / BUSCADOR ================= -->
+  <section class="bg-brand-dark px-6 py-16">
+    <div class="max-w-3xl mx-auto text-center">
 
-    <h1 class="text-4xl font-bold text-center text-slate-800 mb-4">
+      <h1 class="text-3xl sm:text-4xl font-display text-brand-cream">
+        Descubre tu próxima película
+      </h1>
 
-      Descubre tu próxima película
+      <p class="mt-3 text-slate-300">
+        Explora todo el catálogo de FilmTalk y encuentra qué ver hoy.
+      </p>
 
-    </h1>
+      <!-- Buscador -->
+      <div class="relative mt-8 max-w-xl mx-auto">
+        <div class="relative">
+          <i class="bi bi-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-400"></i>
 
-    <p class="text-slate-500 mb-8 text-center">
+          <input
+            [formControl]="buscarControlSearch"
+            (focus)="searchTerm().length >= 2 && showSuggestions.set(true)"
+            (blur)="closeSuggestions()"
+            type="text"
+            placeholder="Buscar películas por título..."
+            class="w-full rounded-full border-0 bg-white py-3.5 pl-12 pr-12 text-brand-dark placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-gold transition">
 
-      Explora todas las películas registradas en Film Talk
-
-    </p>
-
-    <!-- Buscador -->
-
-    <div class="relative w-full max-w-2xl">
-
-      <input [formControl]="buscarControlSearch" type="text" placeholder="Buscar películas..." class="w-full rounded-full border border-slate-300 py-3 pl-6 pr-14
-                focus:ring-2 focus:ring-indigo-500 outline-none">
-
-      <button class="absolute right-2 top-1/2 -translate-y-1/2
-                bg-indigo-600 text-white rounded-full
-                w-10 h-10 flex items-center justify-center">
-
-        <i class="fa-solid fa-magnifying-glass"></i>
-
-      </button>
-
-    </div>
-
-    <!--respuestas de búsqueda-->
-      @if(resultadosPelisBusqueda().length > 0){
-      <div class="border rounded-xl overflow-hidden mb-8 max-h-60 overflow-y-auto">
-        <!-- *** CORRECCIÓN AQUÍ: Usamos $index como respaldo *** -->
-        @for (pelicula of resultadosPelisBusqueda(); track pelicula.id || pelicula._id || $index) {
-        <div 
-          class="flex gap-4 items-center p-3 hover:bg-slate-100 cursor-pointer transition border-b last:border-b-0">
-
-          <!-- Usamos poster (mapeado) o poster_path como respaldo -->
-          @if (pelicula.poster || pelicula.poster_path) {
-
-          <img
-            [src]="pelicula.poster || pelicula.poster_path"
-            class="w-14 h-20 object-cover rounded" (error)="pelicula.poster = ''">
-
-          } @else {
-
-          <div class="w-14 h-20 bg-slate-200 rounded flex items-center justify-center text-xs text-slate-500">
-            Sin imagen
-          </div>
-
+          @if (searchTerm()) {
+            <button
+              (click)="clearSearch()"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-dark transition">
+              <i class="bi bi-x-circle-fill"></i>
+            </button>
           }
-
-          <div>
-
-            <h3 class="font-semibold text-slate-800">
-
-              {{pelicula.title}}
-
-            </h3>
-
-            <p class="text-sm text-gray-500">
-
-              {{pelicula.release_date || pelicula.releaseDate || 'Fecha no disponible'}}
-
-            </p>
-
-          </div>
-
         </div>
 
+        <!-- Sugerencias rápidas -->
+        @if (showSuggestions() && resultadosPelisBusqueda().length > 0) {
+          <div class="absolute z-30 mt-2 w-full rounded-2xl bg-white shadow-xl border border-slate-100 overflow-hidden text-left max-h-80 overflow-y-auto">
+            @for (pelicula of resultadosPelisBusqueda(); track pelicula._id) {
+              <a
+                [routerLink]="['/movie', pelicula._id]"
+                class="flex items-center gap-3 p-3 hover:bg-brand-cream transition border-b border-slate-100 last:border-b-0">
+
+                @if (pelicula.poster) {
+                  <img [src]="pelicula.poster" [alt]="pelicula.title" class="w-10 h-14 rounded object-cover shrink-0">
+                } @else {
+                  <div class="w-10 h-14 rounded bg-slate-200 flex items-center justify-center text-slate-400 shrink-0">
+                    <i class="bi bi-film"></i>
+                  </div>
+                }
+
+                <div class="min-w-0">
+                  <p class="font-semibold text-brand-dark truncate">{{ pelicula.title }}</p>
+                  <p class="text-xs text-slate-500">{{ pelicula.releaseDate | slice:0:4 }}</p>
+                </div>
+              </a>
+            }
+          </div>
+        }
+
+        @if (showSuggestions() && searchTerm().length >= 2 && resultadosPelisBusqueda().length === 0) {
+          <div class="absolute z-30 mt-2 w-full rounded-2xl bg-white shadow-xl border border-slate-100 p-4 text-left text-sm text-slate-400">
+            No encontramos películas que coincidan con "{{ searchTerm() }}".
+          </div>
         }
       </div>
-      }
-
+    </div>
   </section>
 
-  <!-- FILTROS -->
+  <div class="max-w-7xl mx-auto px-6 py-10">
 
-  <section class="mt-10 flex flex-wrap gap-3 justify-center">
-
-    <button class="px-5 py-2 rounded-full bg-slate-200 hover:bg-slate-300">
-
-      Acción
-
-    </button>
-
-    <button class="px-5 py-2 rounded-full bg-slate-200">
-
-      Comedia
-
-    </button>
-
-    <button class="px-5 py-2 rounded-full bg-slate-200">
-
-      Drama
-
-    </button>
-
-    <button class="px-5 py-2 rounded-full bg-slate-200">
-
-      Terror
-
-    </button>
-
-    <button class="px-5 py-2 rounded-full bg-slate-200">
-
-      Ciencia ficción
-
-    </button>
-
-  </section>
-
-  <!-- GRID -->
-
-  <section class="mt-12
-        grid
-        grid-cols-2
-        sm:grid-cols-3
-        md:grid-cols-4
-        lg:grid-cols-5
-        xl:grid-cols-6
-        gap-8">
-
-    <!-- Tarjeta -->
-
-    @for(movie of moviesDBMongoArray(); track movie._id){
-
-    <article class="bg-white rounded-2xl shadow hover:shadow-xl
-            transition cursor-pointer overflow-hidden">
-
-      <img [src]="movie.poster" [alt]="movie.title" class="w-full aspect-[2/3] object-cover">
-
-      <div class="p-4">
-
-        <h3 class="font-bold text-slate-800 line-clamp-1">
-
-         {{movie.title}}
-
-        </h3>
-
-        <p class="text-sm text-slate-500" style="padding: 5px 0px;">
-
-          {{movie.genres}}
-
-        </p>
-
-      </div>
-
-    </article>
+    <!-- ================= FILTROS DE GÉNERO ================= -->
+    @if (availableGenres().length > 0) {
+      <section class="flex flex-wrap gap-3 justify-center mb-10">
+        @for (genre of availableGenres(); track genre) {
+          <button
+            (click)="selectGenre(genre)"
+            [class.bg-brand-gold]="selectedGenre() === genre"
+            [class.text-brand-dark]="selectedGenre() === genre"
+            [class.bg-white]="selectedGenre() !== genre"
+            [class.text-slate-600]="selectedGenre() !== genre"
+            class="px-5 py-2 rounded-full text-sm font-medium border border-slate-200 shadow-sm hover:shadow transition">
+            {{ genre }}
+          </button>
+        }
+      </section>
     }
 
-  </section>
+    <!-- ================= ESTADOS ================= -->
+    @if (isLoading()) {
+      <div class="flex items-center justify-center py-20 text-slate-500">
+        <i class="bi bi-arrow-repeat animate-spin text-2xl mr-2"></i>
+        Cargando catálogo...
+      </div>
+    }
 
-  <!-- CARGAR MÁS -->
+    @if (errorMessage()) {
+      <div class="max-w-xl mx-auto bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center gap-2">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        {{ errorMessage() }}
+      </div>
+    }
 
-  <!--<div class="flex justify-center mt-12">
+    @if (!isLoading() && !errorMessage() && filteredMovies().length === 0) {
+      <div class="flex flex-col items-center gap-3 py-20 text-slate-400">
+        <i class="bi bi-film text-5xl"></i>
+        <p>No hay películas que coincidan con tu búsqueda.</p>
+      </div>
+    }
 
-    <button class="rounded-full border border-slate-300
-            w-14 h-14 text-2xl
-            hover:bg-slate-100">
+    <!-- ================= GRID DE PELÍCULAS ================= -->
+    @if (!isLoading() && filteredMovies().length > 0) {
+      <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+        @for (movie of filteredMovies(); track movie._id) {
+          <a
+            [routerLink]="['/movie', movie._id]"
+            class="group bg-white rounded-2xl shadow hover:shadow-xl transition overflow-hidden">
 
-      ↓
+            <div class="relative">
+              <img
+                [src]="movie.poster"
+                [alt]="movie.title"
+                class="w-full aspect-[2/3] object-cover group-hover:scale-105 transition duration-300">
 
-    </button>
+              <span class="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-xs font-semibold text-amber-700">
+                <i class="bi bi-star-fill text-amber-500"></i> {{ movie.rating }}
+              </span>
+            </div>
 
-  </div>-->
+            <div class="p-4">
+              <h3 class="font-semibold text-brand-dark line-clamp-1">
+                {{ movie.title }}
+              </h3>
 
+              <p class="text-sm text-slate-500 mt-1 line-clamp-1">
+                {{ movie.genres }}
+              </p>
+            </div>
+          </a>
+        }
+      </section>
+    }
+
+  </div>
 </div>
+
+<footerComponent />

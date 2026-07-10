@@ -22,9 +22,9 @@
 
    @if (addRequired()) {
      <button (click)="create.emit()"
-      class="rounded-xl bg-cyan-500 px-5 py-3 font-medium text-white transition hover:bg-cyan-600">
+      class="rounded-xl bg-brand-dark px-5 py-3 font-medium text-white transition hover:bg-brand-dark/90">
 
-      <i class="fa-solid fa-plus mr-2"></i>
+      <i class="bi bi-plus-circle-fill mr-2"></i>
 
       {{ buttonText() }}
 
@@ -81,7 +81,19 @@
 
           <td class="whitespace-nowrap px-6 py-5 text-sm text-slate-700">
 
-            @if(column.formatter){
+            @if(column.badge){
+
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+              [ngClass]="column.badge!(row[column.key]).classes">
+
+              <i class="bi" [ngClass]="column.badge!(row[column.key]).icon"></i>
+
+              {{ column.badge!(row[column.key]).label }}
+
+            </span>
+
+            } @else if(column.formatter){
 
             {{ column.formatter!(row[column.key]) }}
 
@@ -101,16 +113,16 @@
             <div class="flex justify-center gap-2">
 
               <button (click)="edit.emit(row)"
-                class="flex h-9 w-9 items-center justify-center rounded-lg text-cyan-600 transition hover:bg-cyan-100">
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-brand-dark transition hover:bg-brand-cream">
 
-                <i class="fa-solid fa-pen"></i>
+                <i class="bi bi-pencil-square"></i>
 
               </button>
 
               <button (click)="delete.emit(row)"
                 class="flex h-9 w-9 items-center justify-center rounded-lg text-red-500 transition hover:bg-red-100">
 
-                <i class="fa-solid fa-trash"></i>
+                <i class="bi bi-trash3-fill"></i>
 
               </button>
 
@@ -129,7 +141,7 @@
 
             <div class="flex flex-col items-center gap-3">
 
-              <i class="fa-solid fa-table-list text-5xl text-slate-300"></i>
+              <i class="bi bi-table text-5xl text-slate-300"></i>
 
               <h3 class="text-lg font-semibold text-slate-600">
 

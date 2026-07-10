@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 @Component({
   selector: 'footerComponent',
   imports: [RouterLink],
-  templateUrl: './Footercomponent.html',
+  templateUrl: './FooterComponent.html',
 })
 export class FooterComponent {
 

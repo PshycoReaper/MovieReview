@@ -8,8 +8,8 @@ const {updateMovie} = require("../controllers/moviesController.js")
  
 router.post("/postMovie", postMovie)
 router.get("/getMovies", getMovies)
-router.get("/getMovie/:id", getMovieById)
 router.get("/getMovieByName/:name", getMovieByName)
+router.get("/getMovie/:id", getMovieById)
 router.put("/updateMovie/:id", updateMovie)
 router.delete("/deleteMovie/:id", deleteMovie)
 

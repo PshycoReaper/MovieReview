@@ -5,6 +5,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 interface MenuItem {
   title: string;
   route: string;
+  icon?: string;
   active?: boolean;
   function?: () => void;
   class?: string;
@@ -23,18 +24,22 @@ export class SideBarComponent {
     {
       title: 'Panel de Control',
       route: '/admin/main',
+      icon: 'bi-speedometer2',
     },
     {
       title: 'Películas',
       route: '/admin/movies',
+      icon: 'bi-film',
     },
     {
       title: 'Reseñas',
       route: '/admin/reviews',
+      icon: 'bi-chat-square-text-fill',
     },
     {
       title: 'Peticiones',
       route: '/admin/petitions',
+      icon: 'bi-inbox-fill',
     },
   ]);
 
@@ -42,14 +47,17 @@ export class SideBarComponent {
     {
       title: 'Ir al sitio',
       route: '/',
+      icon: 'bi-house-door-fill',
     },
     {
       title: 'Explorar películas',
       route: '/movies',
+      icon: 'bi-collection-play-fill',
     },
     {
       title: 'Página de contacto',
       route: '/contact',
+      icon: 'bi-envelope-fill',
     },
   ]);
 

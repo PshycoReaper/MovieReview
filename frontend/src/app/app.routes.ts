@@ -1,11 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './MoviewReviewApp/guards/auth-guard';
 import { ReviewComponent } from './MoviewReviewApp/components/MoviePage/Review.Component/Review.Component';
-
-import { MovieSearchPage } from './MoviewReviewApp/pages/MovieSearchPage/MovieSearchPage';
-
 import { MovieDashboardPage } from './MoviewReviewApp/pages/adminDashboard/MovieDashboardPage/MovieDashboardPage';
-
 
 export const routes: Routes = [
 
@@ -28,11 +24,13 @@ export const routes: Routes = [
   },
 
   // ==========================
-  // Explorar - TalkFilm
+  // Explorar / catálogo de películas
   // ==========================
   {
-    path: 'search',
-    component: MovieSearchPage
+    path: 'movies',
+    loadComponent: () =>
+      import('./MoviewReviewApp/pages/MovieSearchPage/MovieSearchPage')
+        .then(m => m.MovieSearchPage),
   },
 
   // ==========================

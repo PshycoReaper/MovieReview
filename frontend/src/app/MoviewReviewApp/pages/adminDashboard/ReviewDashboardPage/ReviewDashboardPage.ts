@@ -1,4 +1,4 @@
-import { Component, inject, signal, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, computed, inject, signal, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TableComponent } from '../../../components/Dashboard/Table.component/Table.component';
 import { TableColumn } from '../../../Interfaces/tableColumns.interface';
@@ -25,6 +25,9 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   filteredMovieId = signal<string | null>(null);
   filteredMovie = signal<Movie | null>(null);
 
+  // Catálogo de películas, usado para resolver el título a mostrar en la columna "Película"
+  private moviesArray = signal<Movie[]>([]);
+
   private reviewsArray = signal<Review[]>([]);
   private subscriptions = new Subscription();
   private editingReview = signal<Review | null>(null);
@@ -50,11 +53,18 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   trackBy = signal<string>('_id');
 
   reviewColumns: TableColumn[] = [
-    { key: '_id', title: 'ID' },
     { key: 'userName', title: 'Usuario' },
     { key: 'review', title: 'Contenido' },
-    { key: 'grade', title: 'Calificación', formatter: (value) => `⭐ ${value}` },
-    { key: 'idMovie', title: 'ID de Película' },
+    {
+      key: 'grade',
+      title: 'Calificación',
+      badge: (value) => ({
+        label: `${value}/5`,
+        icon: 'bi-star-fill',
+        classes: 'bg-amber-100 text-amber-700',
+      }),
+    },
+    { key: 'movieTitle', title: 'Película' },
     {
       key: 'createdAt',
       title: 'Fecha de Creación',
@@ -65,7 +75,17 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   //==================
   // Computed
   //==================
-  reviews = this.reviewsArray.asReadonly();
+  // Reseñas ya "enriquecidas" con el título de la película. Al ser un computed, se
+  // recalcula automáticamente sin importar si las reseñas o las películas terminan
+  // de cargar primero (evita el bug de "Película no encontrada" por condición de carrera).
+  reviews = computed(() => {
+    const titlesById = new Map(this.moviesArray().map((m) => [m._id, m.title]));
+
+    return this.reviewsArray().map((review) => ({
+      ...review,
+      movieTitle: titlesById.get(review.idMovie) ?? 'Película no encontrada',
+    }));
+  });
 
   //==================
   // Ciclo de vida
@@ -73,6 +93,13 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
+    // Cargar el catálogo de películas para poder mostrar su título en la tabla
+    const moviesSub = this.dbconexion.getMovies().subscribe({
+      next: (movies) => this.moviesArray.set(movies),
+      error: (err) => console.error('Error al cargar películas para el mapeo:', err),
+    });
+    this.subscriptions.add(moviesSub);
+
     const subscription = this.route.queryParamMap.subscribe((params) => {
       const movieId = params.get('movieId');
       this.filteredMovieId.set(movieId);

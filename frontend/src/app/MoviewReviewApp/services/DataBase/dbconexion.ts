@@ -48,15 +48,15 @@ export class DBconexion {
   getMovieById(id: string): Observable<Movie> {
     return this.http.get<Movie>(this.apiUrl + `api/movies/getMovie/${id}`);
   }
+  // Búsqueda de películas por título (página de Explorar)
+  getMovieByName(name: string): Observable<Movie[]> {
+    return this.http.get<Movie[]>(this.apiUrl + `api/movies/getMovieByName/${name}`);
+  }
   updateMovie(id: string, data: Movie): Observable<any> {
     return this.http.put(this.apiUrl + `api/movies/updateMovie/${id}`, data);
   }
   deleteMovie(id: string): Observable<any> {
     return this.http.delete(this.apiUrl + `api/movies/deleteMovie/${id}`)
-  }
-
-  getMovieByName(name: string): Observable<any> {
-    return this.http.get<Movie[]>(this.apiUrl + `api/movies/getMovieByName/${name}`);
   }
 
   // Métodos para peticiones de contacto (cambios de reseña / solicitud de películas)

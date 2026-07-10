@@ -24,7 +24,7 @@
 
       <button (click)="cerrarModal()" class="text-slate-500 hover:text-red-500 transition text-2xl">
 
-        ✕
+        <i class="bi bi-x-circle-fill"></i>
 
       </button>
 
@@ -140,11 +140,11 @@
               Selecciona una calificación
             </option>
 
-            <option [value]="1">⭐ 1</option>
-            <option [value]="2">⭐⭐ 2</option>
-            <option [value]="3">⭐⭐⭐ 3</option>
-            <option [value]="4">⭐⭐⭐⭐ 4</option>
-            <option [value]="5">⭐⭐⭐⭐⭐ 5</option>
+            <option [value]="1">1 - Muy mala</option>
+            <option [value]="2">2 - Mala</option>
+            <option [value]="3">3 - Regular</option>
+            <option [value]="4">4 - Buena</option>
+            <option [value]="5">5 - Excelente</option>
 
           </select>
 
