@@ -1,29 +1,2 @@
 @import "tailwindcss";
 @import "swiper/css/bundle";
-
-/* ==========================================================
-   Tema FilmTalk: tipografías y paleta de colores de marca
-   ========================================================== */
-
-@theme {
-  --font-display: 'Lemon/Milk', 'Host Grotesk', sans-serif;
-  --font-sans: 'Host Grotesk', sans-serif;
-
-  --color-brand-dark: #212544;
-  --color-brand-cream: #ebe8e0;
-  --color-brand-gold: #e2ae69;
-}
-
-html {
-  font-family: 'Host Grotesk', sans-serif;
-}
-
-body {
-  font-family: 'Host Grotesk', sans-serif;
-  background-color: #ebe8e0;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Lemon/Milk', 'Host Grotesk', sans-serif;
-  letter-spacing: 0.01em;
-}

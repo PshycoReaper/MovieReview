@@ -55,6 +55,10 @@ export class DBconexion {
     return this.http.delete(this.apiUrl + `api/movies/deleteMovie/${id}`)
   }
 
+  getMovieByName(name: string): Observable<any> {
+    return this.http.get<Movie[]>(this.apiUrl + `api/movies/getMovieByName/${name}`);
+  }
+
   // Métodos para peticiones de contacto (cambios de reseña / solicitud de películas)
   postContactRequest(data: ContactRequest): Observable<any> {
     console.log('Enviando petición de contacto al backend:', data);

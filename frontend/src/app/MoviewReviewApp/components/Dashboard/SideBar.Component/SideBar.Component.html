@@ -27,10 +27,10 @@
 
     @for(item of adminMenu(); track item.route){
 
-    <a [routerLink]="item.route" routerLinkActive="bg-brand-gold text-brand-dark font-medium" [routerLinkActiveOptions]="{ exact: true }"
-      class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800 hover:text-white">
+    <a [routerLink]="item.route" routerLinkActive="bg-cyan-500 font-medium" [routerLinkActiveOptions]="{ exact: true }"
+      class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800">
 
-      <i class="bi {{ item.icon }} text-lg"></i>
+      <i></i>
 
       {{ item.title }}
 
@@ -51,10 +51,10 @@
 
     @for(item of navigationMenu(); track item.route){
 
-    <a [routerLink]="item.route" routerLinkActive="bg-brand-gold text-brand-dark font-medium" [routerLinkActiveOptions]="{ exact: true }"
-      class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800 hover:text-white">
+    <a [routerLink]="item.route" routerLinkActive="bg-cyan-500 font-medium" [routerLinkActiveOptions]="{ exact: true }"
+      class="mb-2 flex items-center gap-3 rounded-xl px-4 py-3 transition hover:bg-slate-800">
 
-      <i class="bi {{ item.icon }} text-lg"></i>
+      <i></i>
 
       {{ item.title }}
 
@@ -69,8 +69,6 @@
     <a routerLink="/login" (click)="logout()"
       class="w-full flex items-center gap-3 rounded-xl bg-red-600 px-4 py-3 transition hover:bg-red-700">
 
-      <i class="bi bi-box-arrow-right text-lg"></i>
-
       Cerrar sesión
 
     </a>
@@ -83,7 +81,7 @@
 
     <div class="flex items-center gap-3">
 
-      <div class="flex h-11 w-11 items-center justify-center rounded-full bg-brand-gold text-brand-dark text-lg font-bold">
+      <div class="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-500 text-lg font-bold">
 
         {{adminName().charAt(0).toUpperCase()}}
 

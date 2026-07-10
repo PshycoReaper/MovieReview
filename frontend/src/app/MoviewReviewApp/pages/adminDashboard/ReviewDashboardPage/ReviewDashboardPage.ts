@@ -25,9 +25,6 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   filteredMovieId = signal<string | null>(null);
   filteredMovie = signal<Movie | null>(null);
 
-  // Mapa de idPelícula -> título, para mostrar el nombre en vez del ObjectId
-  private movieTitlesMap = new Map<string, string>();
-
   private reviewsArray = signal<Review[]>([]);
   private subscriptions = new Subscription();
   private editingReview = signal<Review | null>(null);
@@ -53,22 +50,11 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   trackBy = signal<string>('_id');
 
   reviewColumns: TableColumn[] = [
+    { key: '_id', title: 'ID' },
     { key: 'userName', title: 'Usuario' },
     { key: 'review', title: 'Contenido' },
-    {
-      key: 'grade',
-      title: 'Calificación',
-      badge: (value) => ({
-        label: `${value}/5`,
-        icon: 'bi-star-fill',
-        classes: 'bg-amber-100 text-amber-700',
-      }),
-    },
-    {
-      key: 'idMovie',
-      title: 'Película',
-      formatter: (value) => this.movieTitlesMap.get(value) || 'Película no encontrada',
-    },
+    { key: 'grade', title: 'Calificación', formatter: (value) => `⭐ ${value}` },
+    { key: 'idMovie', title: 'ID de Película' },
     {
       key: 'createdAt',
       title: 'Fecha de Creación',
@@ -87,17 +73,6 @@ export class ReviewDashboardPage implements OnInit, OnDestroy {
   constructor() {}
 
   ngOnInit(): void {
-    // Cargar el catálogo de películas para poder mostrar su título en la tabla
-    const moviesSub = this.dbconexion.getMovies().subscribe({
-      next: (movies) => {
-        movies.forEach((m) => {
-          if (m._id) this.movieTitlesMap.set(m._id, m.title);
-        });
-      },
-      error: (err) => console.error('Error al cargar películas para el mapeo:', err),
-    });
-    this.subscriptions.add(moviesSub);
-
     const subscription = this.route.queryParamMap.subscribe((params) => {
       const movieId = params.get('movieId');
       this.filteredMovieId.set(movieId);

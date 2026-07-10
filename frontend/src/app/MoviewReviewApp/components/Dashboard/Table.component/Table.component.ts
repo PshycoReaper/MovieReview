@@ -1,11 +1,10 @@
 import { Component, input, output, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { TableColumn } from '../../../Interfaces/tableColumns.interface';
 
 @Component({
   selector: 'table-component',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './Table.component.html',
 })
 export class TableComponent {

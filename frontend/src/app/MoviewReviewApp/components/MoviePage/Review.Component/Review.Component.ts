@@ -30,17 +30,6 @@ export class ReviewComponent implements OnInit, OnChanges {
   // Aquí se almacenan las reseñas obtenidas del backend
   reviewsFromBackend = signal<Review[]>([]);
 
-  // Para el selector de calificación con íconos (1 a 5 estrellas)
-  starOptions = [1, 2, 3, 4, 5];
-
-  initials(name: string): string {
-    return name?.trim().charAt(0).toUpperCase() || '?';
-  }
-
-  setGrade(value: number) {
-    this.grade = value;
-  }
-
   ngOnInit() {
     this.resolveMovieId();
     this.getReviewsFromBackend();

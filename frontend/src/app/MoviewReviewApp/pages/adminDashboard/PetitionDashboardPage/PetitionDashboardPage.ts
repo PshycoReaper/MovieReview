@@ -50,12 +50,8 @@ export class PetitionDashboardPage implements OnInit, OnDestroy {
     {
       key: 'status',
       title: 'Estado',
-      badge: (value) =>
-        value === 'resolved'
-          ? { label: 'Resuelta', icon: 'bi-check-circle-fill', classes: 'bg-emerald-100 text-emerald-700' }
-          : value === 'in_progress'
-          ? { label: 'En proceso', icon: 'bi-arrow-repeat', classes: 'bg-blue-100 text-blue-700' }
-          : { label: 'Pendiente', icon: 'bi-hourglass-split', classes: 'bg-amber-100 text-amber-700' },
+      formatter: (value) =>
+        value === 'resolved' ? '✅ Resuelta' : value === 'in_progress' ? '🔄 En proceso' : '🕒 Pendiente',
     },
     {
       key: 'createdAt',
