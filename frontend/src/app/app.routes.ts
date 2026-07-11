@@ -18,10 +18,10 @@ export const routes: Routes = [
   // ==========================
   // Publicar reseña (genérica, legado)
   // ==========================
-  {
+  /*{
     path: 'review',
     component: ReviewComponent
-  },
+  },*/
 
   // ==========================
   // Explorar / catálogo de películas
