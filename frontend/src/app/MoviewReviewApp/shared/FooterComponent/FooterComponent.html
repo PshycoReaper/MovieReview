@@ -1,144 +1,45 @@
 <footer class="mt-20 bg-[#212544] text-white">
 
-  <!-- ================= Contenido ================= -->
-
-  <div class="mx-auto grid max-w-7xl gap-10 px-8 py-14 md:grid-cols-4">
+  <div class="mx-auto max-w-5xl px-8 py-12 flex flex-col items-center text-center">
 
     <!-- Logo -->
 
-    <div>
+    <h2 (click)="logoClick()"
+      class="mb-6 cursor-pointer select-none text-3xl font-bold transition duration-200 hover:scale-105 active:scale-95">
 
-      <h2 (click)="logoClick()"
-        class="mb-4 cursor-pointer select-none text-3xl font-bold transition duration-200 hover:scale-105 active:scale-95">
+      <span class="text-[#ebe8e0]">Film</span>
+      <span class="text-[#e2ae69]">Talk</span>
 
-        <span class="text-[#ebe8e0]">Film</span>
-        <span class="text-[#e2ae69]">Talk</span>
-
-      </h2>
-
-      <p class="text-sm leading-6 text-slate-400">
-
-        Descubre nuevas películas, comparte reseñas y encuentra tu próxima favorita.
-
-      </p>
-
-    </div>
+    </h2>
 
     <!-- Navegación -->
 
-    <div>
+    <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm font-semibold tracking-wide">
 
-      <h3 class="mb-4 font-semibold text-white">
+      @for(item of navigation(); track item.route; let last = $last){
 
-        Navegación
+      <li class="flex items-center gap-x-8">
 
-      </h3>
-
-      <ul class="space-y-3">
-
-        @for(item of navigation(); track item.route){
-
-        <li>
-
-          <a [routerLink]="item.route" class="text-slate-400 transition hover:text-[#e2ae69]">
-
+        @if(item.external){
+          <a [href]="item.route" target="_blank" rel="noopener noreferrer"
+            class="text-slate-200 uppercase transition hover:text-[#e2ae69]">
             {{item.title}}
-
           </a>
-
-        </li>
-
+        } @else {
+          <a [routerLink]="item.route" class="text-slate-200 uppercase transition hover:text-[#e2ae69]">
+            {{item.title}}
+          </a>
         }
 
-      </ul>
+        @if(!last){
+          <span class="h-1 w-1 rounded-full bg-[#e2ae69]"></span>
+        }
 
-    </div>
+      </li>
 
-    <!-- Información -->
+      }
 
-    <div>
-
-      <h3 class="mb-4 font-semibold">
-
-        Información
-
-      </h3>
-
-      <ul class="space-y-3">
-
-        <li>
-
-          <a routerLink="/about" class="text-slate-400 transition hover:text-[#e2ae69]">
-
-            Acerca de
-
-          </a>
-
-        </li>
-
-        <li>
-
-          <a routerLink="/contact" class="text-slate-400 transition hover:text-[#e2ae69]">
-
-            Contacto
-
-          </a>
-
-        </li>
-
-        <li>
-
-          <a routerLink="/privacy" class="text-slate-400 transition hover:text-[#e2ae69]">
-
-            Política de privacidad
-
-          </a>
-
-        </li>
-
-      </ul>
-
-    </div>
-
-    <!-- Redes -->
-
-    <div>
-
-      <h3 class="mb-4 font-semibold">
-
-        Síguenos
-
-      </h3>
-
-      <div class="flex gap-4 text-2xl">
-
-        <a class="transition hover:text-[#e2ae69]">
-
-          <i class="bi bi-facebook"></i>
-
-        </a>
-
-        <a class="transition hover:text-[#e2ae69]">
-
-          <i class="bi bi-instagram"></i>
-
-        </a>
-
-        <a class="transition hover:text-[#e2ae69]">
-
-          <i class="bi bi-twitter-x"></i>
-
-        </a>
-
-        <a class="transition hover:text-[#e2ae69]">
-
-          <i class="bi bi-youtube"></i>
-
-        </a>
-
-      </div>
-
-    </div>
+    </ul>
 
   </div>
 
@@ -146,14 +47,13 @@
 
   <div class="border-t border-slate-700">
 
-    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-8 py-6 md:flex-row">
+    <div class="mx-auto max-w-5xl px-8 py-5 text-center">
 
-      <p class="text-sm text-slate-400">
+      <p class="text-xs text-slate-400">
 
-        © {{currentYear}} FilmTalk. Todos los derechos reservados.
+        © {{currentYear}} FilmTalk. Todos los derechos reservados. Realizado por Jorge Alberto Muñoz Castañeda, Guillermo Alexis Araiza Tarín y Aurora Martínez Schiaffino. Film data de TMDB.
 
       </p>
-
 
     </div>
 

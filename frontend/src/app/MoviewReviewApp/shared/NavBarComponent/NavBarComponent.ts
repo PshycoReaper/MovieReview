@@ -18,7 +18,7 @@ export class NavbarComponent {
       route: '/movies',
     },
     {
-      title: 'Contactanos',
+      title: 'Contacto',
       route: '/contact',
     },
   ]);
