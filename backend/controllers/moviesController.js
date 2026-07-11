@@ -23,20 +23,31 @@ const getMovies= async (req, res) => {
     try {
         const movies = await movie.find().sort({ createdAt: -1 });
 
-        // Contar cuántas reseñas tiene cada película y agregarlo como campo "reviewsCount"
-        const reviewCounts = await review.aggregate([
-            { $group: { _id: "$idMovie", count: { $sum: 1 } } }
+        // Contar cuántas reseñas tiene cada película y calcular el promedio de
+        // calificaciones de la comunidad ("communityRating"), en el mismo aggregate
+        const reviewStats = await review.aggregate([
+            { $group: { _id: "$idMovie", count: { $sum: 1 }, avgGrade: { $avg: "$grade" } } }
         ]);
 
-        const countsMap = reviewCounts.reduce((acc, item) => {
-            acc[item._id.toString()] = item.count;
+        const statsMap = reviewStats.reduce((acc, item) => {
+            acc[item._id.toString()] = {
+                count: item.count,
+                avgGrade: item.avgGrade
+            };
             return acc;
         }, {});
 
-        const moviesWithCounts = movies.map((m) => ({
-            ...m.toObject(),
-            reviewsCount: countsMap[m._id.toString()] || 0
-        }));
+        const moviesWithCounts = movies.map((m) => {
+            const stats = statsMap[m._id.toString()];
+
+            return {
+                ...m.toObject(),
+                reviewsCount: stats ? stats.count : 0,
+                // "rating" sigue siendo la calificación de TMDB; "communityRating" es
+                // el promedio calculado a partir de las reseñas de los usuarios.
+                communityRating: stats ? Number(stats.avgGrade.toFixed(1)) : null
+            };
+        });
 
         res.status(200).json(moviesWithCounts);
     } catch (error) {
@@ -59,9 +70,16 @@ const getMovieById = async (req, res) => {
             return res.status(404).json({ message: "Película no encontrada" });
         }
 
-        const reviewsCount = await review.countDocuments({ idMovie: id });
+        const [stats] = await review.aggregate([
+            { $match: { idMovie: new mongoose.Types.ObjectId(id) } },
+            { $group: { _id: "$idMovie", count: { $sum: 1 }, avgGrade: { $avg: "$grade" } } }
+        ]);
 
-        res.status(200).json({ ...foundMovie.toObject(), reviewsCount });
+        res.status(200).json({
+            ...foundMovie.toObject(),
+            reviewsCount: stats ? stats.count : 0,
+            communityRating: stats ? Number(stats.avgGrade.toFixed(1)) : null
+        });
     } catch (error) {
         console.error("Error al obtener la película:", error);
         res.status(500).json({ message: "Error al obtener la película" });

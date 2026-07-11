@@ -125,9 +125,15 @@
                 [alt]="movie.title"
                 class="w-full aspect-[2/3] object-cover group-hover:scale-105 transition duration-300">
 
-              <span class="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-xs font-semibold text-amber-700">
+              <span class="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-xs font-semibold text-amber-700" title="Calificación TMDB">
                 <i class="bi bi-star-fill text-amber-500"></i> {{ movie.rating }}
               </span>
+
+              @if (movie.communityRating) {
+                <span class="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-brand-dark/85 backdrop-blur px-2.5 py-1 text-xs font-semibold text-brand-gold" title="Calificación de la comunidad">
+                  <i class="bi bi-star-fill"></i> {{ movie.communityRating }}
+                </span>
+              }
             </div>
 
             <div class="p-4">

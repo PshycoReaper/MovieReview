@@ -52,9 +52,15 @@
           </h1>
 
           <div class="mt-3 flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-700 px-3 py-1 text-sm font-semibold">
-              <i class="bi bi-star-fill"></i> {{ pelicula.rating }}
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-700 px-3 py-1 text-sm font-semibold" title="Calificación en TMDB">
+              <i class="bi bi-star-fill"></i> {{ pelicula.rating }} <span class="font-normal text-amber-600">TMDB</span>
             </span>
+
+            @if (pelicula.communityRating) {
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-gold/20 text-brand-dark px-3 py-1 text-sm font-semibold" title="Promedio de reseñas de la comunidad">
+                <i class="bi bi-star-fill text-brand-gold"></i> {{ pelicula.communityRating }} <span class="font-normal text-brand-dark/70">Comunidad</span>
+              </span>
+            }
 
             <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-dark/5 text-brand-dark px-3 py-1 text-sm">
               <i class="bi bi-translate"></i> {{ pelicula.language }}
@@ -89,7 +95,7 @@
           Detalles
         </h2>
 
-        <div class="grid gap-4 sm:grid-cols-3">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
           <div class="rounded-xl bg-white border border-slate-100 p-4">
             <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Fecha de estreno</p>
@@ -108,11 +114,23 @@
           </div>
 
           <div class="rounded-xl bg-white border border-slate-100 p-4">
-            <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Calificación</p>
+            <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Calificación TMDB</p>
             <p class="font-semibold text-brand-dark flex items-center gap-2">
               <i class="bi bi-star-fill text-brand-gold"></i>
-              {{ pelicula.rating }} / 5
+              {{ pelicula.rating }} / 10
             </p>
+          </div>
+
+          <div class="rounded-xl bg-white border border-slate-100 p-4">
+            <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Calificación de la comunidad</p>
+            @if (pelicula.communityRating) {
+              <p class="font-semibold text-brand-dark flex items-center gap-2">
+                <i class="bi bi-star-fill text-brand-gold"></i>
+                {{ pelicula.communityRating }} / 5
+              </p>
+            } @else {
+              <p class="text-sm text-slate-400">Sin reseñas aún</p>
+            }
           </div>
 
         </div>
