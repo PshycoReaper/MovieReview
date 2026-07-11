@@ -1,19 +1,19 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './MoviewReviewApp/guards/auth-guard';
 import { ReviewComponent } from './MoviewReviewApp/components/MoviePage/Review.Component/Review.Component';
-import { MovieDashboardPage } from './MoviewReviewApp/pages/adminDashboard/MovieDashboardPage/MovieDashboardPage';
+//import { MovieDashboardPage } from './MoviewReviewApp/pages/adminDashboard/MovieDashboardPage/MovieDashboardPage';
 
 export const routes: Routes = [
 
   // ==========================
-  // Página pública (próximamente)
+  // Página pública: Inicio
   // ==========================
-  /*{
+  {
     path: '',
     loadComponent: () =>
-      import('./MoviewReviewApp/pages/home/home.component')
-        .then(m => m.HomeComponent),
-  },*/
+      import('./MoviewReviewApp/pages/HomePage/HomePage')
+        .then(m => m.HomePage),
+  },
 
   // ==========================
   // Publicar reseña (genérica, legado)
