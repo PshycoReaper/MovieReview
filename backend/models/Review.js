@@ -11,8 +11,6 @@ const reviewSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true
-            // NOTA: Quité 'unique: true' porque varios usuarios pueden tener el mismo nombre
-            // Si quieres que sea único, manténlo, pero considera que puede causar problemas
         },
         review: {
             type: String,

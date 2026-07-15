@@ -1,31 +1,23 @@
 const express = require("express");
 const cors = require("cors");
 
-const authRoutes = require("./routes/authRoutes");
-const reviewRoutes = require("./routes/reviewRoutes");
-const moviesRoutes = require("./routes/moviesRoutes");
-const contactRoutes = require("./routes/contactRoutes");
+const registerRoutes = require("./config/routes");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
-// Middlewares
+// Middlewares globales
 app.use(cors());
-app.use(express.json({ limit: '25mb' }));
+app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({
     extended: true,
-    limit: '25mb'
+    limit: "25mb"
 }));
 
-// Rutas
-app.use("/api/auth", authRoutes);
-app.use("/api/reviews", reviewRoutes);
-app.use("/api/movies", moviesRoutes)
-app.use("/api/contact", contactRoutes)
+// Registro centralizado de rutas
+registerRoutes(app);
 
-
-// Ruta de prueba
-app.get("/", (req, res) => {
-    res.send("API MovieReview funcionando correctamente");
-});
+// Manejo global de errores (siempre al final, después de las rutas)
+app.use(errorHandler);
 
 module.exports = app;

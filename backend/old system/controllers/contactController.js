@@ -1,4 +1,4 @@
-const ContactRequest = require("../models/ContactRequest");
+const ContactRequest = require("../../models/ContactRequest");
 
 // ============================================
 // Crear una nueva petición (formulario público)
