@@ -7,8 +7,7 @@ import { AuthService } from '../../../services/auth/auth';
 @Component({
   selector: 'app-login',
   imports: [FormsModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  templateUrl: './login.component.html'
 })
 export class LoginComponent {
   email = '';
