@@ -82,7 +82,7 @@ export class ReviewComponent implements OnInit, OnChanges {
 
   sendReview() {
     if (!this.resolvedMovieId) {
-      console.error('❌ No se pudo determinar el ID de la película para esta reseña');
+      console.error('No se pudo determinar el ID de la película para esta reseña');
       alert('No se pudo identificar la película. Recarga la página e intenta de nuevo.');
       return;
     }
@@ -96,7 +96,7 @@ export class ReviewComponent implements OnInit, OnChanges {
 
     this.dbConexion.postReview(reviewData).subscribe({
       next: () => {
-        console.log('✅ Reseña enviada correctamente');
+        console.log('Reseña enviada correctamente');
 
         // Volver a consultar las reseñas para mostrar la nueva
         this.getReviewsFromBackend();
@@ -106,7 +106,7 @@ export class ReviewComponent implements OnInit, OnChanges {
       },
 
       error: (err) => {
-        console.error('❌ Error al enviar la reseña:', err);
+        console.error('Error al enviar la reseña:', err);
       },
     });
   }
@@ -124,7 +124,7 @@ export class ReviewComponent implements OnInit, OnChanges {
       },
 
       error: (err) => {
-        console.error('❌ Error al obtener las reseñas:', err);
+        console.error('Error al obtener las reseñas:', err);
       },
     });
   }

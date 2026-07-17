@@ -392,7 +392,7 @@ export class MovieForm {
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
 
-      console.log('❌ Formulario inválido');
+      console.log('Formulario inválido');
 
       return;
     }

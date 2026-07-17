@@ -60,12 +60,12 @@ export class MovieDashboardPage {
 
     this.DBconexion.postMovie(movie).subscribe({
       next: (response) => {
-        console.log('✅ Película agregada correctamente', response);
+        console.log('Película agregada correctamente', response);
         alert('¡Película agregada exitosamente!');
         this.getMovies();
       },
       error: (err) => {
-        console.error('❌ Error al enviar la película:', err);
+        console.error('Error al enviar la película:', err);
         alert('Error al agregar la película. Por favor, intenta de nuevo.');
       },
     });
@@ -76,7 +76,7 @@ export class MovieDashboardPage {
     const peliculaId = movie._id;
 
     if (!peliculaId) {
-      console.error('❌ No hay ID de película para actualizar');
+      console.error('No hay ID de película para actualizar');
       return;
     }
 
@@ -84,12 +84,12 @@ export class MovieDashboardPage {
 
     this.DBconexion.updateMovie(peliculaId, movie).subscribe({
       next: (respuesta) => {
-        console.log('✅ Película actualizada exitosamente', respuesta);
+        console.log('Película actualizada exitosamente', respuesta);
         alert('¡Película actualizada exitosamente!');
         this.getMovies();
       },
       error: (error) => {
-        console.error('❌ Error al actualizar la película:', error);
+        console.error('Error al actualizar la película:', error);
         alert('Error al actualizar la película. Por favor, intenta de nuevo.');
       },
     });
@@ -102,7 +102,7 @@ export class MovieDashboardPage {
     }
 
     if (!movie._id) {
-      console.error('❌ No hay ID para eliminar');
+      console.error('No hay ID para eliminar');
       return;
     }
 
@@ -110,12 +110,12 @@ export class MovieDashboardPage {
 
     this.DBconexion.deleteMovie(movie._id).subscribe({
       next: (respuesta) => {
-        console.log('✅ Película eliminada exitosamente', respuesta);
+        console.log('Película eliminada exitosamente', respuesta);
         alert('¡Película eliminada exitosamente!');
         this.getMovies();
       },
       error: (error) => {
-        console.error('❌ Error al eliminar la película:', error);
+        console.error('Error al eliminar la película:', error);
         alert('Error al eliminar la película. Por favor, intenta de nuevo.');
       },
     });
@@ -135,7 +135,7 @@ export class MovieDashboardPage {
         this.moviesCollection.set(response);
       },
       error: (err) => {
-        console.error('❌ Error al obtener las películas:', err);
+        console.error('Error al obtener las películas:', err);
       },
     });
   }
